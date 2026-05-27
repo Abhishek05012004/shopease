@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
+import api from "../../services/api";
 
 const ProductRecommendations = ({ productId, type = "related" }) => {
   const [recommendations, setRecommendations] = useState([]);
@@ -16,22 +17,20 @@ const ProductRecommendations = ({ productId, type = "related" }) => {
 
         switch (type) {
           case "related":
-            url = `/api/recommendations/${productId}`;
+            url = `/recommendations/${productId}`;
             break;
           case "bought-together":
-            url = `/api/recommendations/bought-together/${productId}`;
+            url = `/recommendations/bought-together/${productId}`;
             break;
           case "trending":
-            url = `/api/recommendations/trending`;
+            url = `/recommendations/trending`;
             break;
           default:
-            url = `/api/recommendations/${productId}`;
+            url = `/recommendations/${productId}`;
         }
-
-        const response = await fetch(`${import.meta.env.VITE_API_URL}${url}`);
-        if (response.ok) {
-          const data = await response.json();
-          setRecommendations(data);
+        const response = await api.get(url);
+        if (response.status === 200) {
+          setRecommendations(response.data);
         }
       } catch (error) {
         console.error("Error fetching recommendations:", error);

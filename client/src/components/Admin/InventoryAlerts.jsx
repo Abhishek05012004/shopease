@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import api from "../../services/api";
 
 const InventoryAlerts = () => {
   const [alerts, setAlerts] = useState({
@@ -18,17 +19,10 @@ const InventoryAlerts = () => {
   const fetchInventoryAlerts = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/analytics/dashboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get("/analytics/dashboard");
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        const data = response.data;
         setAlerts({
           lowStock: data.lowStockProducts || [],
           outOfStock: data.overview.outOfStockCount || 0,
