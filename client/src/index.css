@@ -1,0 +1,519 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Updated to modern font pairing - Inter for headings, DM Sans for body */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap");
+
+/* Updated CSS custom properties for new color scheme - dark slate gray, gold, emerald green */
+:root {
+  /* Primary Colors - Dark slate gray background */
+  --color-primary: #2c3e50;
+  --color-primary-dark: #1a252f;
+  --color-primary-light: #34495e;
+  --color-primary-50: #f8f9fa;
+  --color-primary-100: #ecf0f1;
+  --color-primary-600: #2c3e50;
+  --color-primary-700: #1a252f;
+
+  /* Accent Colors - Elegant gold for CTAs */
+  --color-accent: #f1c40f;
+  --color-accent-dark: #d4ac0d;
+  --color-accent-light: #f4d03f;
+  --color-accent-50: #fef9e7;
+  --color-accent-100: #fcf3cf;
+
+  /* Secondary Colors - Emerald green */
+  --color-secondary: #16a085;
+  --color-secondary-dark: #138d75;
+  --color-secondary-light: #48c9b0;
+  --color-secondary-50: #e8f8f5;
+  --color-secondary-100: #d1f2eb;
+
+  /* Success Color - Green */
+  --color-success: #27ae60;
+  --color-success-light: #2ecc71;
+  --color-success-50: #eafaf1;
+
+  /* Neutrals - Sophisticated grays */
+  --color-gray-50: #f8f9fa;
+  --color-gray-100: #ecf0f1;
+  --color-gray-200: #d5dbdb;
+  --color-gray-300: #aeb6bf;
+  --color-gray-400: #85929e;
+  --color-gray-500: #5d6d7e;
+  --color-gray-600: #34495e;
+  --color-gray-700: #2c3e50;
+  --color-gray-800: #1b2631;
+  --color-gray-900: #17202a;
+
+  /* Typography */
+  --font-heading: "Inter", system-ui, -apple-system, sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, sans-serif;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Updated body background to dark slate gray */
+body {
+  font-family: var(--font-body);
+  line-height: 1.6;
+  color: var(--color-gray-100);
+  background-color: var(--color-primary);
+  font-weight: 400;
+}
+
+/* Typography hierarchy with Inter for headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-gray-100);
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+h5 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Updated scrollbar with new color scheme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-primary-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-dark);
+}
+
+/* Updated loading spinner with gold accent */
+.loading-spinner {
+  border: 3px solid var(--color-primary-light);
+  border-top: 3px solid var(--color-accent);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+.spinner {
+  border: 2px solid var(--color-primary-light);
+  border-top: 2px solid var(--color-accent);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Enhanced button styles with new gold accent color system */
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--color-secondary);
+  color: white;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+  background: var(--color-secondary-dark);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--color-accent);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-outline:hover {
+  background: var(--color-accent);
+  color: var(--color-primary);
+}
+
+/* Enhanced card styles with dark theme */
+.card {
+  background: var(--color-primary-light);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-600);
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.product-card {
+  background: var(--color-primary-light);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-600);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--color-accent);
+}
+
+/* Enhanced form styles with dark theme */
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--color-gray-600);
+  border-radius: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  background: var(--color-primary-light);
+  color: var(--color-gray-100);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-100);
+}
+
+.form-input::placeholder {
+  color: var(--color-gray-400);
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-100);
+  margin-bottom: 0.5rem;
+}
+
+/* New filter styles with updated dark colors */
+.filter-section {
+  background: var(--color-primary-light);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-600);
+  padding: 1.5rem;
+  position: sticky;
+  top: 6rem;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.filter-item:hover {
+  background: var(--color-primary);
+}
+
+.filter-checkbox {
+  border-radius: 0.25rem;
+  border: 2px solid var(--color-gray-500);
+  color: var(--color-accent);
+  margin-right: 0.75rem;
+}
+
+.filter-checkbox:focus {
+  box-shadow: 0 0 0 2px var(--color-accent-100);
+}
+
+/* Product grid layout */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Enhanced animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Updated gradient backgrounds with new color scheme */
+.gradient-bg {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+}
+
+/* Enhanced hover effects */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Updated badge styles with new color system */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-heading);
+}
+
+.badge-primary {
+  background: var(--color-primary-light);
+  color: var(--color-gray-100);
+}
+
+.badge-accent {
+  background: var(--color-accent-100);
+  color: var(--color-accent-dark);
+}
+
+.badge-secondary {
+  background: var(--color-secondary-100);
+  color: var(--color-secondary-dark);
+}
+
+.badge-success {
+  background: var(--color-success-50);
+  color: var(--color-success);
+}
+
+.badge-gray {
+  background: var(--color-gray-600);
+  color: var(--color-gray-100);
+}
+
+/* Enhanced focus states with gold accent */
+.focus-ring {
+  transition: all 0.2s ease;
+}
+
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-accent-100);
+}
+
+/* Enhanced mobile responsive utilities */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .card,
+  .filter-section {
+    padding: 1rem;
+  }
+}
+
+/* New utility classes for consistent spacing and layout */
+.container-padding {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-padding {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-padding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.section-spacing {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+  .section-spacing {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+}
+
+/* Continuous scrolling marquee for the header */
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
