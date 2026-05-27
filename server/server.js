@@ -26,7 +26,8 @@ app.use(
       "http://localhost:5173",
       "http://127.0.0.1:3000",
       "http://127.0.0.1:5173",
-    ],
+      process.env.CLIENT_URL,
+    ].filter(Boolean),
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -115,7 +116,11 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Health check available at: http://localhost:${PORT}/api/health`);
-});
+if (process.env.NODE_ENV !== "test" && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Health check available at: http://localhost:${PORT}/api/health`);
+  });
+}
+
+module.exports = app;
