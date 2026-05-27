@@ -37,19 +37,35 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose
-  .connect(
+let isConnected = false;
+const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
+  console.log("Connecting to MongoDB...");
+  await mongoose.connect(
     process.env.MONGODB_URI || "mongodb://localhost:27017/mern-ecommerce",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }
-  )
-  .then(() => {
+  );
+  if (!isConnected) {
     console.log("MongoDB connected successfully");
-    createDemoUsers();
-  })
-  .catch((err) => console.error("MongoDB connection error:", err));
+    await createDemoUsers();
+    isConnected = true;
+  }
+};
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("MongoDB connection middleware error:", err);
+    res.status(500).json({ message: "Database connection failed", error: err.message });
+  }
+});
 
 const createDemoUsers = async () => {
   try {
@@ -98,6 +114,15 @@ app.use("/api/analytics", analyticsRoutes);
 app.get("/api/health", (req, res) => {
   res.json({
     message: "Server is running successfully!",
+    timestamp: new Date().toISOString(),
+    mongodb:
+      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+  });
+});
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "ShopEase Backend API is running successfully!",
     timestamp: new Date().toISOString(),
     mongodb:
       mongoose.connection.readyState === 1 ? "connected" : "disconnected",
