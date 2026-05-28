@@ -237,33 +237,6 @@ const Login = () => {
               </button>
             </form>
 
-            {/* Demo Credentials */}
-            <div className="mt-8 p-6 bg-blue-50 rounded-xl border border-blue-200">
-              <h3
-                className="text-sm font-bold text-blue-900 mb-3"
-                style={{ fontFamily: "var(--font-heading)" }}
-              >
-                Demo Credentials
-              </h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                  <span className="font-medium text-gray-700">
-                    User Account:
-                  </span>
-                  <span className="text-blue-600 font-mono text-xs">
-                    john@example.com / user123
-                  </span>
-                </div>
-                <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                  <span className="font-medium text-gray-700">
-                    Admin Account:
-                  </span>
-                  <span className="text-blue-600 font-mono text-xs">
-                    admin@shopease.com / admin123
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div className="text-center mt-6 text-sm text-gray-500">

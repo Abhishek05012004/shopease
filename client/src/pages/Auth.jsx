@@ -211,16 +211,6 @@ const Auth = ({ defaultForm = "login" }) => {
             </div>
           </div>
 
-          <div className="mt-12 p-6 bg-slate-800 bg-opacity-60 rounded-2xl backdrop-blur-sm border border-slate-600">
-            <h3 className="font-semibold mb-2 text-yellow-400">
-              Demo Credentials
-            </h3>
-            <p className="text-sm text-slate-300">
-              <strong>Admin:</strong> admin@shopease.com / admin123
-              <br />
-              <strong>User:</strong> john@example.com / user123
-            </p>
-          </div>
         </div>
       </div>
 
