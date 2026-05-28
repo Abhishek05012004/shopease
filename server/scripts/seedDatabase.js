@@ -13,38 +13,10 @@ const users = [
     role: "admin",
     phone: "9876543210",
     address: {
-      street: "123 Admin Street",
-      city: "New Delhi",
-      state: "Delhi",
-      zipCode: "110001",
-      country: "India",
-    },
-  },
-  {
-    name: "John Doe",
-    email: "john@example.com",
-    password: "user123",
-    role: "user",
-    phone: "9876543211",
-    address: {
-      street: "456 User Avenue",
-      city: "Mumbai",
-      state: "Maharashtra",
-      zipCode: "400001",
-      country: "India",
-    },
-  },
-  {
-    name: "Jade Smith",
-    email: "jane@example.com",
-    password: "user123",
-    role: "user",
-    phone: "9876543212",
-    address: {
-      street: "789 Customer Lane",
-      city: "Bangalore",
-      state: "Karnataka",
-      zipCode: "560001",
+      street: "Ajwa Chowkdi",
+      city: "Vadodara",
+      state: "Gujarat",
+      zipCode: "390001",
       country: "India",
     },
   },
@@ -57,8 +29,8 @@ const products = [
     name: "iPhone 15 Pro Max",
     description:
       "The most advanced iPhone yet with titanium design, A17 Pro chip, and professional camera system.",
-    price: 1199,
-    originalPrice: 1299,
+    price: 95920,
+    originalPrice: 103920,
     category: "Electronics",
     subcategory: "Smartphones",
     brand: "Apple",
@@ -84,8 +56,8 @@ const products = [
     name: "MacBook Pro 16-inch",
     description:
       "Supercharged by M3 Pro and M3 Max chips. Built for all the ways you work.",
-    price: 2499,
-    originalPrice: 2699,
+    price: 199920,
+    originalPrice: 215920,
     category: "Electronics",
     subcategory: "Laptops",
     brand: "Apple",
@@ -111,8 +83,8 @@ const products = [
     name: "Sony WH-1000XM5 Headphones",
     description:
       "Industry-leading noise canceling with exceptional sound quality and all-day comfort.",
-    price: 399,
-    originalPrice: 449,
+    price: 31920,
+    originalPrice: 35920,
     category: "Electronics",
     subcategory: "Audio",
     brand: "Sony",
@@ -138,8 +110,8 @@ const products = [
     name: 'Samsung 65" QLED 4K TV',
     description:
       "Quantum Dot technology delivers brilliant colors and exceptional contrast.",
-    price: 1299,
-    originalPrice: 1499,
+    price: 103920,
+    originalPrice: 119920,
     category: "Electronics",
     subcategory: "TVs",
     brand: "Samsung",
@@ -167,8 +139,8 @@ const products = [
     name: "Premium Cotton T-Shirt",
     description:
       "Soft, comfortable, and stylish cotton t-shirt perfect for everyday wear.",
-    price: 29,
-    originalPrice: 39,
+    price: 299,
+    originalPrice: 399,
     category: "Clothing",
     subcategory: "T-Shirts",
     brand: "ComfortWear",
@@ -194,8 +166,8 @@ const products = [
     name: "Designer Denim Jacket",
     description:
       "Classic denim jacket with modern styling and premium construction.",
-    price: 89,
-    originalPrice: 119,
+    price: 7120,
+    originalPrice: 9520,
     category: "Clothing",
     subcategory: "Jackets",
     brand: "UrbanStyle",
@@ -221,8 +193,8 @@ const products = [
     name: "Athletic Running Shoes",
     description:
       "High-performance running shoes with advanced cushioning and breathable design.",
-    price: 129,
-    originalPrice: 159,
+    price: 10320,
+    originalPrice: 12720,
     category: "Clothing",
     subcategory: "Shoes",
     brand: "SportMax",
@@ -250,8 +222,8 @@ const products = [
     name: "The Art of Programming",
     description:
       "Comprehensive guide to modern programming techniques and best practices.",
-    price: 49,
-    originalPrice: 59,
+    price: 399,
+    originalPrice: 499,
     category: "Books",
     subcategory: "Technology",
     brand: "TechPress",
@@ -277,8 +249,8 @@ const products = [
     name: "Mindfulness and Meditation",
     description:
       "A practical guide to finding peace and clarity in everyday life.",
-    price: 24,
-    originalPrice: 29,
+    price: 199,
+    originalPrice: 299,
     category: "Books",
     subcategory: "Self-Help",
     brand: "WellnessBooks",
@@ -306,8 +278,8 @@ const products = [
     name: "Smart Home Security Camera",
     description:
       "4K wireless security camera with night vision and mobile app control.",
-    price: 199,
-    originalPrice: 249,
+    price: 15920,
+    originalPrice: 19920,
     category: "Home & Garden",
     subcategory: "Security",
     brand: "SecureHome",
@@ -333,8 +305,8 @@ const products = [
     name: "Ergonomic Office Chair",
     description:
       "Premium ergonomic chair with lumbar support and adjustable features.",
-    price: 299,
-    originalPrice: 399,
+    price: 23920,
+    originalPrice: 31920,
     category: "Home & Garden",
     subcategory: "Furniture",
     brand: "ComfortSeating",
@@ -362,8 +334,8 @@ const products = [
     name: "Professional Tennis Racket",
     description:
       "High-performance tennis racket used by professional players worldwide.",
-    price: 179,
-    originalPrice: 219,
+    price: 14320,
+    originalPrice: 17520,
     category: "Sports",
     subcategory: "Tennis",
     brand: "ProSport",
@@ -389,8 +361,8 @@ const products = [
     name: "Yoga Mat Premium",
     description:
       "Non-slip yoga mat with superior cushioning and eco-friendly materials.",
-    price: 59,
-    originalPrice: 79,
+    price: 499,
+    originalPrice: 599,
     category: "Sports",
     subcategory: "Fitness",
     brand: "ZenFit",
@@ -418,8 +390,8 @@ const products = [
     name: "Luxury Skincare Set",
     description:
       "Complete skincare routine with premium ingredients for radiant skin.",
-    price: 149,
-    originalPrice: 199,
+    price: 11920,
+    originalPrice: 15920,
     category: "Beauty",
     subcategory: "Skincare",
     brand: "GlowBeauty",
@@ -447,8 +419,8 @@ const products = [
     name: "Educational Building Blocks",
     description:
       "Creative building blocks that enhance problem-solving and motor skills.",
-    price: 39,
-    originalPrice: 49,
+    price: 349,
+    originalPrice: 449,
     category: "Toys",
     subcategory: "Educational",
     brand: "SmartPlay",
@@ -476,8 +448,8 @@ const products = [
     name: "Car Phone Mount",
     description:
       "Universal car phone mount with 360-degree rotation and secure grip.",
-    price: 25,
-    originalPrice: 35,
+    price: 249,
+    originalPrice: 349,
     category: "Automotive",
     subcategory: "Accessories",
     brand: "DriveEasy",
@@ -506,8 +478,8 @@ const products = [
     name: "iPad Pro 12.9-inch",
     description:
       "The ultimate iPad experience with the M2 chip, Liquid Retina XDR display, and all-day battery life.",
-    price: 1099,
-    originalPrice: 1199,
+    price: 87920,
+    originalPrice: 95920,
     category: "Electronics",
     subcategory: "Tablets",
     brand: "Apple",
@@ -533,8 +505,8 @@ const products = [
     name: "Samsung Galaxy Watch 6",
     description:
       "Advanced health monitoring, fitness tracking, and seamless connectivity with your smartphone.",
-    price: 349,
-    originalPrice: 399,
+    price: 27920,
+    originalPrice: 31920,
     category: "Electronics",
     subcategory: "Wearables",
     brand: "Samsung",
@@ -562,8 +534,8 @@ const products = [
     name: "Classic Wool Sweater",
     description:
       "Warm and comfortable wool sweater perfect for chilly days and casual outings.",
-    price: 79,
-    originalPrice: 99,
+    price: 6320,
+    originalPrice: 7920,
     category: "Clothing",
     subcategory: "Sweaters",
     brand: "CozyKnits",
@@ -589,8 +561,8 @@ const products = [
     name: "Professional Blazer",
     description:
       "Tailored blazer for a sharp, professional look that transitions from office to evening.",
-    price: 129,
-    originalPrice: 159,
+    price: 10320,
+    originalPrice: 12720,
     category: "Clothing",
     subcategory: "Blazers",
     brand: "ExecutiveStyle",
@@ -618,8 +590,8 @@ const products = [
     name: "Culinary Masterpieces",
     description:
       "A collection of exquisite recipes from world-renowned chefs with step-by-step instructions.",
-    price: 45,
-    originalPrice: 55,
+    price: 3600,
+    originalPrice: 4400,
     category: "Books",
     subcategory: "Cooking",
     brand: "GourmetPress",
@@ -647,8 +619,8 @@ const products = [
     name: "Smart Plant Watering System",
     description:
       "Automated plant watering system with soil moisture sensors and app control.",
-    price: 89,
-    originalPrice: 119,
+    price: 7120,
+    originalPrice: 9520,
     category: "Home & Garden",
     subcategory: "Gardening",
     brand: "GreenThumb",
@@ -674,8 +646,8 @@ const products = [
     name: "Premium Bedding Set",
     description:
       "Luxurious 1000-thread count Egyptian cotton bedding set for the ultimate sleep experience.",
-    price: 199,
-    originalPrice: 249,
+    price: 15920,
+    originalPrice: 19920,
     category: "Home & Garden",
     subcategory: "Bedding",
     brand: "SleepLux",
@@ -703,8 +675,8 @@ const products = [
     name: "Professional Basketball",
     description:
       "Official size and weight basketball with superior grip and durability for indoor and outdoor play.",
-    price: 59,
-    originalPrice: 79,
+    price: 4720,
+    originalPrice: 6320,
     category: "Sports",
     subcategory: "Basketball",
     brand: "CourtMaster",
@@ -732,8 +704,8 @@ const products = [
     name: "Professional Makeup Brush Set",
     description:
       "Complete set of premium synthetic brushes for flawless makeup application.",
-    price: 79,
-    originalPrice: 99,
+    price: 6320,
+    originalPrice: 7920,
     category: "Beauty",
     subcategory: "Makeup",
     brand: "GlamTools",
@@ -761,8 +733,8 @@ const products = [
     name: "Remote Control Car",
     description:
       "High-speed remote control car with realistic features and long-range control.",
-    price: 49,
-    originalPrice: 69,
+    price: 3920,
+    originalPrice: 5520,
     category: "Toys",
     subcategory: "Remote Control",
     brand: "SpeedRacer",
@@ -790,8 +762,8 @@ const products = [
     name: "Portable Car Jump Starter",
     description:
       "Compact power bank with jump starting capability for emergency situations.",
-    price: 129,
-    originalPrice: 159,
+    price: 10320,
+    originalPrice: 12720,
     category: "Automotive",
     subcategory: "Tools",
     brand: "PowerRescue",
@@ -817,8 +789,8 @@ const products = [
     name: "All-Weather Floor Mats",
     description:
       "Durable, custom-fit floor mats that protect your vehicle's interior from dirt, mud, and spills.",
-    price: 89,
-    originalPrice: 119,
+    price: 7120,
+    originalPrice: 9520,
     category: "Automotive",
     subcategory: "Interior",
     brand: "AutoShield",
@@ -846,8 +818,8 @@ const products = [
     name: "Wireless Charging Station",
     description:
       "Fast wireless charging station compatible with multiple devices simultaneously.",
-    price: 69,
-    originalPrice: 89,
+    price: 5520,
+    originalPrice: 7120,
     category: "Electronics",
     subcategory: "Accessories",
     brand: "ChargeTech",
@@ -873,8 +845,8 @@ const products = [
     name: "Noise Cancelling Earbuds",
     description:
       "True wireless earbuds with active noise cancellation and premium sound quality.",
-    price: 199,
-    originalPrice: 249,
+    price: 15920,
+    originalPrice: 19920,
     category: "Electronics",
     subcategory: "Audio",
     brand: "SoundPeak",
@@ -902,8 +874,8 @@ const products = [
     name: "Smart Thermostat",
     description:
       "Energy-saving smart thermostat that learns your schedule and adjusts temperature automatically.",
-    price: 249,
-    originalPrice: 299,
+    price: 19920,
+    originalPrice: 23920,
     category: "Home & Garden",
     subcategory: "Smart Home",
     brand: "EcoHome",
@@ -944,31 +916,9 @@ async function seedDatabase() {
     const createdUsers = await User.create(users);
     console.log(`Created ${createdUsers.length} users`);
 
-    // Add some reviews to products
-    const sampleReviews = [
-      {
-        user: createdUsers[1]._id,
-        name: createdUsers[1].name,
-        rating: 5,
-        comment: "Excellent product! Highly recommended.",
-      },
-      {
-        user: createdUsers[2]._id,
-        name: createdUsers[2].name,
-        rating: 4,
-        comment: "Great quality and fast shipping.",
-      },
-    ];
-
-    // Add reviews to some products
+    // Set exactly the first 8 products as featured
     products.forEach((product, index) => {
-      if (index % 3 === 0) {
-        product.reviews = [sampleReviews[0]];
-        product.numReviews = 1;
-      } else if (index % 3 === 1) {
-        product.reviews = sampleReviews;
-        product.numReviews = 2;
-      }
+      product.featured = (index < 8);
     });
 
     // Create products
@@ -978,8 +928,6 @@ async function seedDatabase() {
     console.log("Database seeded successfully!");
     console.log("\nDemo Credentials:");
     console.log("Admin: admin@shopease.com / admin123");
-    console.log("User: john@example.com / user123");
-    console.log("User: jane@example.com / user123");
 
     process.exit(0);
   } catch (error) {

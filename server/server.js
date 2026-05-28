@@ -2,6 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const rateLimit = require("express-rate-limit");
 
 // Load environment variables
 dotenv.config();
@@ -19,6 +22,12 @@ const analyticsRoutes = require("./routes/analytics");
 const contactRoutes = require("./routes/contact");
 
 const app = express();
+
+// Secure HTTP headers
+app.use(helmet());
+
+// Prevent NoSQL query injection
+app.use(mongoSanitize());
 
 app.use(
   cors({
@@ -53,7 +62,6 @@ const connectDB = async () => {
   );
   if (!isConnected) {
     console.log("MongoDB connected successfully");
-    await createDemoUsers();
     isConnected = true;
   }
 };
@@ -68,46 +76,23 @@ app.use(async (req, res, next) => {
   }
 });
 
-const createDemoUsers = async () => {
-  try {
-    const User = require("./models/User");
-
-    // Check if demo users exist
-    const adminUser = await User.findOne({ email: "admin@shopease.com" });
-    const regularUser = await User.findOne({ email: "john@example.com" });
-
-    if (!adminUser) {
-      await User.create({
-        name: "Admin User",
-        email: "admin@shopease.com",
-        password: "admin123",
-        role: "admin",
-      });
-      console.log("Demo admin user created");
-    }
-
-    if (!regularUser) {
-      await User.create({
-        name: "John Doe",
-        email: "john@example.com",
-        password: "user123",
-        role: "user",
-      });
-      console.log("Demo regular user created");
-    }
-  } catch (error) {
-    console.error("Error creating demo users:", error);
-  }
-};
+// Rate limiting for auth and payment routes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests from this IP, please try again after 15 minutes" },
+});
 
 // Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", apiLimiter, authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
-app.use("/api/payments", paymentsRoutes);
+app.use("/api/payments", apiLimiter, paymentsRoutes);
 app.use("/api/recommendations", recommendationsRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/contact", contactRoutes);
