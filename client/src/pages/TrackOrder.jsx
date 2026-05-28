@@ -129,8 +129,11 @@ const TrackOrder = () => {
               <div className="bg-slate-700 p-6 rounded-2xl border border-slate-600 shadow-lg">
                 {/* Order Meta */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-slate-600 gap-4">
-                  <div>
-                    <h2 className="text-base sm:text-lg font-bold text-white">Order #{orderData._id}</h2>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-sm sm:text-base md:text-lg font-bold text-white flex flex-wrap items-center gap-x-1.5">
+                      <span>Order</span>
+                      <span className="text-xs sm:text-sm md:text-base font-mono text-slate-300 break-all">#{orderData._id}</span>
+                    </h2>
                     <p className="text-slate-300 text-xs sm:text-sm mt-1">
                       Placed on: {new Date(orderData.createdAt).toLocaleDateString("en-IN", {
                         year: "numeric",
@@ -139,9 +142,9 @@ const TrackOrder = () => {
                       })}
                     </p>
                   </div>
-                  <div className="flex flex-col items-end">
-                    <span className="text-slate-400 text-xs sm:text-sm">Payment Status</span>
-                    <span className={`text-xs sm:text-sm font-semibold mt-1 ${orderData.isPaid ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                  <div className="flex flex-wrap items-center gap-x-1.5 text-xs sm:text-sm sm:flex-col sm:items-end shrink-0">
+                    <span className="text-slate-400">Payment Status:</span>
+                    <span className={`font-semibold ${orderData.isPaid ? 'text-emerald-400' : 'text-yellow-400'}`}>
                       {orderData.isPaid ? 'Paid' : 'Pending Payment'}
                     </span>
                   </div>
@@ -178,8 +181,7 @@ const TrackOrder = () => {
                         ></div>
                       );
                     })}
-                    
-                    <div className={`grid gap-8 relative z-10`} style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
+                    <div className="flex flex-col md:grid gap-8 relative z-10" style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
                       {steps.map((step, idx) => {
                         const state = getStepStatus(orderData.status, step.statusKey);
                         const StepIcon = step.icon;
@@ -204,14 +206,33 @@ const TrackOrder = () => {
                           textClass = "text-slate-400";
                         }
 
+                        // Determine line segment color for mobile vertical segments
+                        let lineBg = "bg-slate-600";
+                        if (idx < steps.length - 1) {
+                          const nextStepState = getStepStatus(orderData.status, steps[idx + 1].statusKey);
+                          if (orderData.status === "Cancelled" && (nextStepState === "cancelled" || state === "cancelled")) {
+                            lineBg = "bg-red-500";
+                          } else if (state === "completed") {
+                            if (orderData.status === "Delivered") {
+                              lineBg = "bg-emerald-500";
+                            } else {
+                              lineBg = "bg-yellow-400";
+                            }
+                          }
+                        }
+
                         return (
-                          <div key={idx} className="flex md:flex-col items-center gap-4 md:gap-3 text-left md:text-center">
-                            <div className="flex justify-center w-full md:h-10 items-center">
-                              <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center shrink-0 shadow-lg ${circleClass}`}>
+                          <div key={idx} className="flex md:flex-col items-center gap-4 md:gap-3 text-left md:text-center relative">
+                            <div className="flex justify-center w-10 md:w-full md:h-10 items-center relative">
+                              <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center shrink-0 shadow-lg z-10 ${circleClass}`}>
                                 <StepIcon className="h-4.5 w-4.5" />
                               </div>
+                              {/* Vertical Line Segment for mobile (drawn below the circle to connect to the next step) */}
+                              {idx < steps.length - 1 && (
+                                <div className={`absolute top-10 bottom-0 left-5 w-0.5 -translate-x-1/2 -mb-8 md:hidden ${lineBg}`}></div>
+                              )}
                             </div>
-                            <div className="mt-2 md:mt-0">
+                            <div className="mt-0 md:mt-0 flex-1 md:flex-initial pt-1 md:pt-0">
                               <h4 className={`text-xs sm:text-sm ${textClass}`}>{step.label}</h4>
                               <p className="text-[10px] text-slate-300 mt-0.5">
                                 {orderData.status === step.statusKey &&
