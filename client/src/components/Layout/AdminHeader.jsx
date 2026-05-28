@@ -188,6 +188,13 @@ const AdminHeader = () => {
                   <p className="text-xs text-slate-400">{user?.email}</p>
                 </div>
                 <div className="py-2">
+                  <Link
+                    to="/admin/profile"
+                    className="flex items-center w-full text-left px-4 py-2 text-slate-300 hover:bg-slate-700 transition-colors"
+                  >
+                    <User className="h-4 w-4 mr-3" />
+                    My Profile
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="flex items-center w-full text-left px-4 py-2 text-red-400 hover:bg-red-900 hover:bg-opacity-20 transition-colors"

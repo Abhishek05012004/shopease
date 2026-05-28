@@ -202,6 +202,14 @@ function App() {
                 }
               />
               <Route
+                path="/profile"
+                element={
+                  <AdminRoute>
+                    <Profile />
+                  </AdminRoute>
+                }
+              />
+              <Route
                 path="/products"
                 element={
                   <AdminRoute>

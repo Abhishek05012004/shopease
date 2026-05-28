@@ -23,7 +23,11 @@ const Profile = () => {
     },
   });
 
-  const { data: ordersRes } = useQuery("userOrders", ordersAPI.getOrders);
+  const { data: ordersRes } = useQuery(
+    "userOrders",
+    ordersAPI.getOrders,
+    { enabled: user?.role !== "admin" }
+  );
   const orders = ordersRes?.data || [];
   const totalOrders = orders.length;
   const totalSpent = orders
@@ -189,9 +193,8 @@ const Profile = () => {
                         type="email"
                         name="email"
                         value={formData.email}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="w-full pl-9 pr-3 py-2 bg-slate-600 border border-slate-500 rounded-lg text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent disabled:bg-slate-800 disabled:text-gray-400"
+                        disabled
+                        className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-500 rounded-lg text-sm text-gray-400 cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -324,33 +327,47 @@ const Profile = () => {
         </div>
 
         {/* Account Statistics */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
-            <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
-              Account Status
-            </h3>
-            <p className="text-emerald-400 font-medium text-sm sm:text-base">Active</p>
-            <p className="text-xs sm:text-sm text-gray-300 mt-1">
-              Member since {new Date(user?.createdAt).getFullYear()}
-            </p>
+        {user?.role === "admin" ? (
+          <div className="mt-8">
+            <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
+                Account Status
+              </h3>
+              <p className="text-emerald-400 font-medium text-sm sm:text-base">Active</p>
+              <p className="text-xs sm:text-sm text-gray-300 mt-1">
+                Member since {new Date(user?.createdAt).getFullYear()}
+              </p>
+            </div>
           </div>
+        ) : (
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
+                Account Status
+              </h3>
+              <p className="text-emerald-400 font-medium text-sm sm:text-base">Active</p>
+              <p className="text-xs sm:text-sm text-gray-300 mt-1">
+                Member since {new Date(user?.createdAt).getFullYear()}
+              </p>
+            </div>
 
-          <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
-            <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
-              Total Orders
-            </h3>
-            <p className="text-xl sm:text-2xl font-bold text-yellow-500">{totalOrders}</p>
-            <p className="text-xs sm:text-sm text-gray-300 mt-1">Lifetime orders</p>
-          </div>
+            <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
+                Total Orders
+              </h3>
+              <p className="text-xl sm:text-2xl font-bold text-yellow-500">{totalOrders}</p>
+              <p className="text-xs sm:text-sm text-gray-300 mt-1">Lifetime orders</p>
+            </div>
 
-          <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
-            <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
-              Total Spent
-            </h3>
-            <p className="text-xl sm:text-2xl font-bold text-yellow-500">₹{totalSpent.toFixed(2)}</p>
-            <p className="text-xs sm:text-sm text-gray-300 mt-1">Lifetime spending</p>
+            <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
+                Total Spent
+              </h3>
+              <p className="text-xl sm:text-2xl font-bold text-yellow-500">₹{totalSpent.toFixed(2)}</p>
+              <p className="text-xs sm:text-sm text-gray-300 mt-1">Lifetime spending</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
