@@ -43,18 +43,24 @@ router.get("/bought-together/:productId", async (req, res) => {
 
     // Find orders that contain this product
     const orders = await Order.find({
-      "items.product": productId,
-    }).populate("items.product");
+      "orderItems.product": productId,
+      $or: [
+        { isPaid: true },
+        { paymentMethod: "Cash on Delivery" }
+      ]
+    }).populate("orderItems.product");
 
     // Count frequency of other products in these orders
     const productFrequency = {};
 
     orders.forEach((order) => {
-      order.items.forEach((item) => {
-        const otherProductId = item.product._id.toString();
-        if (otherProductId !== productId) {
-          productFrequency[otherProductId] =
-            (productFrequency[otherProductId] || 0) + 1;
+      order.orderItems.forEach((item) => {
+        if (item.product) {
+          const otherProductId = item.product._id.toString();
+          if (otherProductId !== productId) {
+            productFrequency[otherProductId] =
+              (productFrequency[otherProductId] || 0) + 1;
+          }
         }
       });
     });

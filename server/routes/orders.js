@@ -56,17 +56,16 @@ router.post("/", protect, async (req, res) => {
 
     const createdOrder = await order.save();
 
-    // Update product stock and sold count
-    for (const item of orderItems) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: {
-          stock: -item.quantity,
-          sold: item.quantity,
-        },
-      });
-    }
-
     if (paymentMethod === "Cash on Delivery") {
+      // Update product stock and sold count immediately for Cash on Delivery
+      for (const item of orderItems) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: {
+            stock: -item.quantity,
+            sold: item.quantity,
+          },
+        });
+      }
       try {
         await sendOrderConfirmation({
           to: createdOrder.contactEmail,
@@ -89,7 +88,13 @@ router.post("/", protect, async (req, res) => {
 // @access  Private
 router.get("/", protect, async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id }).sort({
+    const orders = await Order.find({
+      user: req.user._id,
+      $or: [
+        { isPaid: true },
+        { paymentMethod: "Cash on Delivery" }
+      ]
+    }).sort({
       createdAt: -1,
     });
     res.json(orders);
@@ -166,6 +171,16 @@ router.put("/:id/pay", protect, async (req, res) => {
       };
 
       const updatedOrder = await order.save();
+
+      // Update product stock and sold count upon successful payment
+      for (const item of updatedOrder.orderItems) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: {
+            stock: -item.quantity,
+            sold: item.quantity,
+          },
+        });
+      }
 
       try {
         await sendOrderConfirmation({
@@ -299,10 +314,53 @@ router.put("/:id/status", protect, admin, async (req, res) => {
 // @access  Private/Admin
 router.get("/admin/all", protect, admin, async (req, res) => {
   try {
-    const orders = await Order.find({})
+    const orders = await Order.find({
+      $or: [
+        { isPaid: true },
+        { paymentMethod: "Cash on Delivery" }
+      ]
+    })
       .populate("user", "id name email")
       .sort({ createdAt: -1 });
     res.json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// @route   DELETE /api/orders/:id
+// @desc    Delete unpaid order and restore product stock
+// @access  Private
+router.delete("/:id", protect, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Make sure user owns this order
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    // Only allow deleting unpaid orders
+    if (order.isPaid) {
+      return res.status(400).json({ message: "Cannot delete paid orders" });
+    }
+
+    // Restore product stock and sold count
+    for (const item of order.orderItems) {
+      await Product.findByIdAndUpdate(item.product, {
+        $inc: {
+          stock: item.quantity,
+          sold: -item.quantity,
+        },
+      });
+    }
+
+    await Order.findByIdAndDelete(req.params.id);
+    res.json({ message: "Order deleted and stock restored successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

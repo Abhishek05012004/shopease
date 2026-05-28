@@ -17,11 +17,20 @@ router.get("/dashboard", protect, admin, async (req, res) => {
     // Total counts
     const totalProducts = await Product.countDocuments({ isActive: true });
     const totalUsers = await User.countDocuments({ role: "customer" });
-    const totalOrders = await Order.countDocuments();
+    const totalOrders = await Order.countDocuments({
+      $or: [
+        { isPaid: true },
+        { paymentMethod: "Cash on Delivery" }
+      ]
+    });
 
     // Recent metrics
     const recentOrders = await Order.countDocuments({
       createdAt: { $gte: daysAgo },
+      $or: [
+        { isPaid: true },
+        { paymentMethod: "Cash on Delivery" }
+      ]
     });
 
     const recentUsers = await User.countDocuments({
@@ -136,6 +145,10 @@ router.get("/sales", protect, admin, async (req, res) => {
       {
         $match: {
           createdAt: { $gte: daysAgo },
+          $or: [
+            { isPaid: true },
+            { paymentMethod: "Cash on Delivery" }
+          ]
         },
       },
       {

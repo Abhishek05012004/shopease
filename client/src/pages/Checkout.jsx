@@ -48,6 +48,7 @@ const Checkout = () => {
   const createOrderMutation = useMutation(ordersAPI.createOrder, {
     onSuccess: async (data) => {
       const created = data.data;
+      let paymentSucceeded = true;
       try {
         if (formData.paymentMethod === "Demo") {
           if (formData.demoResult === "success") {
@@ -59,6 +60,8 @@ const Checkout = () => {
             });
             toast.success("Order placed and paid (Demo)! Confirmation email sent to your email.");
           } else {
+            paymentSucceeded = false;
+            await api.delete(`/orders/${created._id}`);
             toast.error("Demo payment failed.");
           }
         } else if (formData.paymentMethod === "Cashfree") {
@@ -83,12 +86,18 @@ const Checkout = () => {
           toast.success("Order placed with Cash on Delivery! Confirmation email sent to your email.");
         }
       } catch (err) {
+        paymentSucceeded = false;
         toast.error(err.response?.data?.message || err.message || "Payment update failed");
         if (formData.paymentMethod === "Cashfree") {
+          try {
+            await api.delete(`/orders/${created._id}`);
+          } catch (delErr) {
+            console.error("Failed to delete order on Cashfree launch exception:", delErr);
+          }
           navigate("/payment-failed");
         }
       } finally {
-        if (formData.paymentMethod !== "Cashfree") {
+        if (formData.paymentMethod !== "Cashfree" && paymentSucceeded) {
           clearCart();
           navigate(`/orders/${created._id}`);
         }

@@ -109,6 +109,21 @@ router.get("/cashfree/verify/:orderId", protect, async (req, res) => {
         }
         return res.json({ status: "PAID", order });
       }
+    } else {
+      // Payment failed or was cancelled, delete unpaid order and restore stock
+      const order = await Order.findById(orderId);
+      if (order && !order.isPaid) {
+        const Product = require("../models/Product");
+        for (const item of order.orderItems) {
+          await Product.findByIdAndUpdate(item.product, {
+            $inc: {
+              stock: item.quantity,
+              sold: -item.quantity,
+            },
+          });
+        }
+        await Order.findByIdAndDelete(orderId);
+      }
     }
 
     return res.json({ status: data.order_status });
