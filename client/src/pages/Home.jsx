@@ -31,6 +31,11 @@ const Home = () => {
     productsAPI.getFeaturedProducts
   );
 
+  const { data: allProductsRes } = useQuery(
+    "allProductsHome",
+    () => productsAPI.getProducts({ limit: 50 })
+  );
+
   const [visibleCount, setVisibleCount] = useState(8);
 
   useEffect(() => {
@@ -59,11 +64,26 @@ const Home = () => {
   }, [featuredProducts]);
 
   const getDisplayProducts = () => {
-    const list = featuredProducts?.data || [];
-    if (list.length === 0) return [];
-    const displayList = [];
-    for (let i = 0; i < visibleCount; i++) {
-      displayList.push(list[i % list.length]);
+    const featured = featuredProducts?.data || [];
+    if (featured.length === 0) return [];
+    
+    const displayList = [...featured];
+    if (displayList.length >= visibleCount) {
+      return displayList.slice(0, visibleCount);
+    }
+    
+    const extraNeeded = visibleCount - displayList.length;
+    const allProdList = allProductsRes?.data?.products || [];
+    const nonFeatured = allProdList.filter(
+      (p) => !featured.some((fp) => fp._id === p._id)
+    );
+    
+    for (let i = 0; i < extraNeeded; i++) {
+      if (nonFeatured.length > 0) {
+        displayList.push(nonFeatured[i % nonFeatured.length]);
+      } else {
+        displayList.push(featured[i % featured.length]);
+      }
     }
     return displayList;
   };
