@@ -60,7 +60,10 @@ const AdminDashboard = () => {
     () =>
       ordersAPI.getAllOrders().then((res) => {
         const orders = res.data;
-        const totalRevenue = orders.reduce(
+        const paidAndDeliveredOrders = orders.filter(
+          (order) => order.isPaid && order.status === "Delivered"
+        );
+        const totalRevenue = paidAndDeliveredOrders.reduce(
           (sum, order) => sum + order.totalPrice,
           0
         );
@@ -80,7 +83,7 @@ const AdminDashboard = () => {
         // Calculate monthly revenue
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
-        const monthlyRevenue = orders
+        const monthlyRevenue = paidAndDeliveredOrders
           .filter((order) => {
             const orderDate = new Date(order.createdAt);
             return (
@@ -99,7 +102,7 @@ const AdminDashboard = () => {
           shipped: shippedOrders,
           completed: completedOrders,
           averageOrderValue:
-            orders.length > 0 ? totalRevenue / orders.length : 0,
+            paidAndDeliveredOrders.length > 0 ? totalRevenue / paidAndDeliveredOrders.length : 0,
           recentOrders: orders.slice(0, 5), // Get 5 most recent orders
         };
       })

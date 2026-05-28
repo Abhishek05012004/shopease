@@ -212,6 +212,10 @@ router.put("/:id/deliver", protect, admin, async (req, res) => {
       order.isDelivered = true;
       order.deliveredAt = Date.now();
       order.status = "Delivered";
+      if (order.paymentMethod === "Cash on Delivery" && !order.isPaid) {
+        order.isPaid = true;
+        order.paidAt = Date.now();
+      }
 
       const updatedOrder = await order.save();
       res.json(updatedOrder);
@@ -260,14 +264,29 @@ router.put("/:id/status", protect, admin, async (req, res) => {
       `[v0] Updating order ${req.params.id} status from ${order.status} to ${status}`
     );
 
-    if (status === "Cancelled") {
+    if (status === "Cancelled" && order.status !== "Cancelled") {
       order.cancelledFromStatus = order.status;
+      // Restore product stock and sold count if stock was previously decremented
+      if (order.isPaid || order.paymentMethod === "Cash on Delivery") {
+        for (const item of order.orderItems) {
+          await Product.findByIdAndUpdate(item.product, {
+            $inc: {
+              stock: item.quantity,
+              sold: -item.quantity,
+            },
+          });
+        }
+      }
     }
 
     order.status = status;
     if (status === "Delivered") {
       order.isDelivered = true;
       order.deliveredAt = Date.now();
+      if (order.paymentMethod === "Cash on Delivery" && !order.isPaid) {
+        order.isPaid = true;
+        order.paidAt = Date.now();
+      }
     }
 
     const updatedOrder = await order.save();

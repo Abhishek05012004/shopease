@@ -274,6 +274,12 @@ const AdminOrders = () => {
                   <span className="text-slate-400 block mb-0.5">Items & Total</span>
                   <span className="text-slate-300 block">{order.orderItems.length} items</span>
                   <span className="text-white font-semibold">₹{order.totalPrice.toFixed(2)}</span>
+                  <div className="text-[10px] text-slate-400 mt-1">
+                    <span className="block">Mode: {order.paymentMethod}</span>
+                    <span className={`block font-semibold ${order.isPaid ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                      Status: {order.isPaid ? 'Paid' : 'Unpaid'}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -393,8 +399,14 @@ const AdminOrders = () => {
                           {order.orderItems.length} item
                           {order.orderItems.length !== 1 ? "s" : ""}
                         </div>
-                        <div className="text-sm font-medium text-white">
+                        <div className="text-sm font-semibold text-white">
                           ₹{order.totalPrice.toFixed(2)}
+                        </div>
+                        <div className="text-xs text-slate-400 mt-1">
+                          Mode: {order.paymentMethod}
+                        </div>
+                        <div className={`text-xs font-semibold mt-0.5 ${order.isPaid ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                          Status: {order.isPaid ? 'Paid' : 'Unpaid'}
                         </div>
                       </div>
                     </td>
@@ -619,6 +631,23 @@ const AdminOrders = () => {
                         ₹{selectedOrder.totalPrice.toFixed(2)}
                       </span>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Details */}
+              <div className="bg-slate-700 rounded-lg p-4">
+                <h3 className="text-sm font-semibold text-white mb-3">Payment Details</h3>
+                <div className="grid grid-cols-2 gap-4 text-xs sm:text-sm">
+                  <div>
+                    <span className="text-slate-400 block mb-0.5">Payment Method / Mode:</span>
+                    <span className="text-white font-medium">{selectedOrder.paymentMethod}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block mb-0.5">Payment Status:</span>
+                    <span className={`font-semibold ${selectedOrder.isPaid ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                      {selectedOrder.isPaid ? 'Paid' : 'Unpaid'}
+                    </span>
                   </div>
                 </div>
               </div>

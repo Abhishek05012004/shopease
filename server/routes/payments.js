@@ -98,6 +98,18 @@ router.get("/cashfree/verify/:orderId", protect, async (req, res) => {
             email_address: order.contactEmail,
           };
           await order.save();
+
+          // Update product stock and sold count upon successful payment
+          const Product = require("../models/Product");
+          for (const item of order.orderItems) {
+            await Product.findByIdAndUpdate(item.product, {
+              $inc: {
+                stock: -item.quantity,
+                sold: item.quantity,
+              },
+            });
+          }
+
           try {
             await sendOrderConfirmation({
               to: order.contactEmail,
