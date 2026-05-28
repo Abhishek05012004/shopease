@@ -167,25 +167,25 @@ const AdminDashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
-          <p className="text-slate-300 mt-2">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Admin Dashboard</h1>
+          <p className="text-xs sm:text-sm text-slate-300 mt-1">
             Welcome back! Here's what's happening with your store.
           </p>
         </div>
 
         {/* Quick notifications */}
         {orderStats?.pending > 0 && (
-          <div className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-4 flex items-center space-x-3">
-            <Bell className="h-5 w-5 text-yellow-400" />
+          <div className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-3 sm:p-4 flex items-center space-x-3">
+            <Bell className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-yellow-400" />
             <div>
-              <p className="text-sm font-medium text-yellow-200">
+              <p className="text-xs sm:text-sm font-medium text-yellow-200">
                 {orderStats.pending} new orders need attention
               </p>
               <Link
                 to="/admin/orders"
-                className="text-xs text-yellow-400 hover:text-yellow-300 flex items-center"
+                className="text-[10px] sm:text-xs text-yellow-400 hover:text-yellow-300 flex items-center"
               >
                 View orders <ArrowUpRight className="h-3 w-3 ml-1" />
               </Link>
@@ -195,32 +195,32 @@ const AdminDashboard = () => {
       </div>
 
       {/* Enhanced Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
         {stats.map((stat) => (
           <div
             key={stat.name}
-            className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6 hover:shadow-md transition-shadow"
+            className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center">
-              <div className={`${stat.color} p-3 rounded-lg`}>
-                <stat.icon className="h-6 w-6 text-white" />
+              <div className={`${stat.color} p-2.5 sm:p-3 rounded-lg`}>
+                <stat.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               </div>
               <div className="ml-4 flex-1">
-                <p className="text-sm font-medium text-slate-400">
+                <p className="text-xs sm:text-sm font-medium text-slate-400">
                   {stat.name}
                 </p>
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
+                <p className="text-lg sm:text-2xl font-bold text-white">{stat.value}</p>
               </div>
             </div>
             <div className="mt-4">
               <div className="flex items-center">
                 {stat.changeType === "positive" ? (
-                  <TrendingUp className="h-4 w-4 text-emerald-400 mr-1" />
+                  <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400 mr-1" />
                 ) : stat.changeType === "negative" ? (
-                  <TrendingDown className="h-4 w-4 text-red-400 mr-1" />
+                  <TrendingDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-400 mr-1" />
                 ) : null}
                 <span
-                  className={`text-sm ${
+                  className={`text-xs sm:text-sm ${
                     stat.changeType === "positive"
                       ? "text-emerald-400"
                       : stat.changeType === "negative"
@@ -231,23 +231,23 @@ const AdminDashboard = () => {
                   {stat.change}
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mt-1">{stat.description}</p>
+              <p className="text-[10px] sm:text-xs text-slate-500 mt-1">{stat.description}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Enhanced Analytics Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-8">
         {/* Order Status Breakdown */}
-        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">
+        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">
               Order Status Overview
             </h2>
-            <PieChart className="h-5 w-5 text-slate-400" />
+            <PieChart className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {[
               {
                 status: "Pending",
@@ -272,17 +272,17 @@ const AdminDashboard = () => {
             ].map((item) => (
               <div
                 key={item.status}
-                className="flex items-center justify-between p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+                className="flex items-center justify-between p-2.5 sm:p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
               >
-                <div className="flex items-center space-x-3">
-                  <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
-                  <span className="text-slate-200 font-medium">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full ${item.color}`}></div>
+                  <span className="text-slate-200 text-xs sm:text-sm font-medium">
                     {item.status}
                   </span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-white font-semibold">{item.count}</span>
-                  <span className="text-slate-400 text-sm">
+                <div className="flex items-center space-x-1.5 sm:space-x-2">
+                  <span className="text-white text-xs sm:text-sm font-semibold">{item.count}</span>
+                  <span className="text-slate-400 text-[10px] sm:text-xs">
                     (
                     {orderStats?.total > 0
                       ? ((item.count / orderStats.total) * 100).toFixed(1)
@@ -296,47 +296,47 @@ const AdminDashboard = () => {
         </div>
 
         {/* Inventory Alerts */}
-        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">
+        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">
               Inventory Status
             </h2>
-            <AlertCircle className="h-5 w-5 text-slate-400" />
+            <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
           </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-emerald-900/20 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                <span className="text-slate-200 font-medium">In Stock</span>
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex items-center justify-between p-2.5 sm:p-3 bg-emerald-900/20 rounded-lg">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500"></div>
+                <span className="text-slate-200 text-xs sm:text-sm font-medium">In Stock</span>
               </div>
-              <span className="text-white font-semibold">
+              <span className="text-white text-xs sm:text-sm font-semibold">
                 {productStats?.inStock || 0}
               </span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <span className="text-slate-200 font-medium">Low Stock</span>
+            <div className="flex items-center justify-between p-2.5 sm:p-3 bg-yellow-900/20 rounded-lg">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+                <span className="text-slate-200 text-xs sm:text-sm font-medium">Low Stock</span>
               </div>
-              <span className="text-white font-semibold">
+              <span className="text-white text-xs sm:text-sm font-semibold">
                 {productStats?.lowStock || 0}
               </span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-red-900/20 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <span className="text-slate-200 font-medium">Out of Stock</span>
+            <div className="flex items-center justify-between p-2.5 sm:p-3 bg-red-900/20 rounded-lg">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+                <span className="text-slate-200 text-xs sm:text-sm font-medium">Out of Stock</span>
               </div>
-              <span className="text-white font-semibold">
+              <span className="text-white text-xs sm:text-sm font-semibold">
                 {productStats?.outOfStock || 0}
               </span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-purple-900/20 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                <span className="text-slate-200 font-medium">Featured</span>
+            <div className="flex items-center justify-between p-2.5 sm:p-3 bg-purple-900/20 rounded-lg">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-purple-500"></div>
+                <span className="text-slate-200 text-xs sm:text-sm font-medium">Featured</span>
               </div>
-              <span className="text-white font-semibold">
+              <span className="text-white text-xs sm:text-sm font-semibold">
                 {productStats?.featured || 0}
               </span>
             </div>
@@ -345,57 +345,57 @@ const AdminDashboard = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Quick Actions</h2>
-            <Activity className="h-5 w-5 text-slate-400" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-8">
+        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">Quick Actions</h2>
+            <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
           </div>
           <div className="space-y-3">
             <a
               href="/admin/products"
-              className="flex items-center p-4 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors group"
+              className="flex items-center p-3 sm:p-4 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors group"
             >
-              <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center mr-4">
-                <Package className="h-5 w-5 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-500 rounded-lg flex items-center justify-center mr-3 sm:mr-4 shrink-0">
+                <Package className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-white" />
               </div>
               <div>
-                <p className="font-medium text-white group-hover:text-emerald-400">
+                <p className="text-sm sm:text-base font-medium text-white group-hover:text-emerald-400">
                   Manage Products
                 </p>
-                <p className="text-sm text-slate-400">
+                <p className="text-xs sm:text-sm text-slate-400">
                   Add, edit, or remove products
                 </p>
               </div>
             </a>
             <Link
               to="/admin/orders"
-              className="flex items-center p-4 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors group"
+              className="flex items-center p-3 sm:p-4 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors group"
             >
-              <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-4">
-                <ShoppingCart className="h-5 w-5 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3 sm:mr-4 shrink-0">
+                <ShoppingCart className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-white" />
               </div>
               <div>
-                <p className="font-medium text-white group-hover:text-purple-400">
+                <p className="text-sm sm:text-base font-medium text-white group-hover:text-purple-400">
                   Manage Orders
                 </p>
-                <p className="text-sm text-slate-400">
+                <p className="text-xs sm:text-sm text-slate-400">
                   View and update order status
                 </p>
               </div>
             </Link>
             <a
               href="/admin/users"
-              className="flex items-center p-4 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors group"
+              className="flex items-center p-3 sm:p-4 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors group"
             >
-              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-4">
-                <Users className="h-5 w-5 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 sm:mr-4 shrink-0">
+                <Users className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-white" />
               </div>
               <div>
-                <p className="font-medium text-white group-hover:text-blue-400">
+                <p className="text-sm sm:text-base font-medium text-white group-hover:text-blue-400">
                   Manage Users
                 </p>
-                <p className="text-sm text-slate-400">
+                <p className="text-xs sm:text-sm text-slate-400">
                   View and manage user accounts
                 </p>
               </div>
@@ -403,32 +403,32 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Recent Orders</h2>
-            <div className="flex items-center space-x-2">
-              <Clock className="h-4 w-4 text-slate-400" />
-              <span className="text-sm text-slate-400">Latest orders</span>
+        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">Recent Orders</h2>
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
+              <span className="text-xs sm:text-sm text-slate-400">Latest orders</span>
             </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {orderStats?.recentOrders?.length > 0 ? (
               orderStats.recentOrders.map((order) => (
                 <div
                   key={order._id}
-                  className="flex items-center justify-between p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+                  className="flex items-center justify-between p-2.5 sm:p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
                 >
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-white">
+                  <div className="flex-1 min-w-0 mr-2">
+                    <p className="text-xs sm:text-sm font-medium text-white truncate">
                       Order #{order._id.slice(-8)}
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-[10px] sm:text-xs text-slate-400 truncate">
                       {order.user?.name} • ₹{order.totalPrice.toFixed(2)}
                     </p>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
                     <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      className={`inline-flex items-center px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium ${
                         order.status === "Pending"
                           ? "bg-yellow-900/30 text-yellow-300 border border-yellow-700"
                           : order.status === "Processing"
@@ -444,9 +444,9 @@ const AdminDashboard = () => {
                     </span>
                     <Link
                       to={`/admin/orders?highlight=${order._id}`}
-                      className="text-slate-400 hover:text-slate-300"
+                      className="text-slate-400 hover:text-slate-300 p-1 rounded hover:bg-slate-600"
                     >
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </Link>
                   </div>
                 </div>

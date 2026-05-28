@@ -31,6 +31,43 @@ const Home = () => {
     productsAPI.getFeaturedProducts
   );
 
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  useEffect(() => {
+    const updateVisibleCount = () => {
+      const grid = document.querySelector(".product-grid");
+      if (grid) {
+        const gridCols = window.getComputedStyle(grid).getPropertyValue("grid-template-columns");
+        const colCount = gridCols.split(" ").filter(Boolean).length;
+        if (colCount > 0) {
+          const target = 8;
+          const remainder = target % colCount;
+          const needed = remainder === 0 ? target : target + (colCount - remainder);
+          setVisibleCount(needed);
+        }
+      }
+    };
+
+    updateVisibleCount();
+    window.addEventListener("resize", updateVisibleCount);
+    const timeout = setTimeout(updateVisibleCount, 150);
+
+    return () => {
+      window.removeEventListener("resize", updateVisibleCount);
+      clearTimeout(timeout);
+    };
+  }, [featuredProducts]);
+
+  const getDisplayProducts = () => {
+    const list = featuredProducts?.data || [];
+    if (list.length === 0) return [];
+    const displayList = [];
+    for (let i = 0; i < visibleCount; i++) {
+      displayList.push(list[i % list.length]);
+    }
+    return displayList;
+  };
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const heroImages = [
@@ -125,7 +162,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="relative overflow-hidden h-screen">
+      <section className="relative overflow-hidden h-[75vh] min-h-[500px]">
         <div className="absolute inset-0">
           {heroImages.map((image, index) => (
             <div
@@ -149,7 +186,7 @@ const Home = () => {
         <div className="relative max-w-7xl mx-auto container-padding section-spacing h-full flex items-center">
           <div className="text-center animate-fade-in-up w-full">
             <h1
-              className="text-5xl md:text-7xl font-bold mb-8 text-white leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Discover Amazing Products at{" "}
@@ -157,22 +194,22 @@ const Home = () => {
                 Unbeatable Prices
               </span>
             </h1>
-            <p className="text-xl md:text-2xl mb-12 text-slate-300 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl mb-10 text-slate-300 max-w-4xl mx-auto leading-relaxed">
               Shop from thousands of products across electronics, fashion,
               books, and more. Fast shipping, secure checkout, and 24/7 customer
               support.
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 to="/products"
-                className="btn-primary text-lg px-10 py-4 shadow-2xl hover:shadow-3xl transform hover:scale-105"
+                className="btn-primary text-base px-8 py-3.5 shadow-2xl hover:shadow-3xl transform hover:scale-105"
               >
                 Shop Now
-                <ArrowRight className="ml-3 h-6 w-6" />
+                <ArrowRight className="ml-3 h-5 w-5" />
               </Link>
               <Link
                 to="/products?featured=true"
-                className="btn-outline border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-slate-800 text-lg px-10 py-4"
+                className="btn-outline border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-slate-800 text-base px-8 py-3.5"
               >
                 View Featured Products
               </Link>
@@ -195,21 +232,21 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-16 bg-slate-700 border-b border-slate-600">
+      <section className="py-12 bg-slate-700 border-b border-slate-600">
         <div className="max-w-7xl mx-auto container-padding">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-yellow-400 bg-opacity-20 rounded-2xl flex items-center justify-center group-hover:bg-yellow-400 group-hover:bg-opacity-30 transition-colors duration-300">
-                  <stat.icon className="h-8 w-8 text-yellow-400" />
+                <div className="w-14 h-14 mx-auto mb-4 bg-yellow-400 bg-opacity-20 rounded-2xl flex items-center justify-center group-hover:bg-yellow-400 group-hover:bg-opacity-30 transition-colors duration-300">
+                  <stat.icon className="h-7 w-7 text-yellow-400" />
                 </div>
                 <div
-                  className="text-3xl font-bold text-white mb-2"
+                  className="text-2xl font-bold text-white mb-1"
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
                   {stat.value}
                 </div>
-                <div className="text-slate-300 font-medium">{stat.label}</div>
+                <div className="text-sm text-slate-300 font-medium">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -218,14 +255,14 @@ const Home = () => {
 
       <section className="section-spacing bg-slate-800">
         <div className="max-w-7xl mx-auto container-padding">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2
-              className="text-4xl md:text-5xl font-bold text-white mb-6"
+              className="text-2xl md:text-3xl font-bold text-white mb-4"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Why Choose ShopEase?
             </h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-base md:text-lg text-slate-300 max-w-3xl mx-auto">
               We're committed to providing you with the best shopping experience
               possible.
             </p>
@@ -233,47 +270,47 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="card hover-lift text-center group">
-              <div className="w-20 h-20 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Truck className="h-10 w-10 text-slate-800" />
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-3xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
+                <Truck className="h-8 w-8 text-slate-800" />
               </div>
               <h3
-                className="text-2xl font-bold mb-4 text-white"
+                className="text-lg md:text-xl font-bold mb-3 text-white"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
                 Free Shipping
               </h3>
-              <p className="text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-300 leading-relaxed">
                 Free shipping on orders over ₹500
               </p>
             </div>
 
             <div className="card hover-lift text-center group">
-              <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Shield className="h-10 w-10 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
+                <Shield className="h-8 w-8 text-white" />
               </div>
               <h3
-                className="text-2xl font-bold mb-4 text-white"
+                className="text-lg md:text-xl font-bold mb-3 text-white"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
                 Secure Payment
               </h3>
-              <p className="text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-300 leading-relaxed">
                 Your payment information is encrypted and secure with
                 industry-standard SSL protection.
               </p>
             </div>
 
             <div className="card hover-lift text-center group">
-              <div className="w-20 h-20 bg-gradient-to-br from-yellow-600 to-orange-500 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Headphones className="h-10 w-10 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-600 to-orange-500 rounded-3xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
+                <Headphones className="h-8 w-8 text-white" />
               </div>
               <h3
-                className="text-2xl font-bold mb-4 text-white"
+                className="text-lg md:text-xl font-bold mb-3 text-white"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
                 24/7 Support
               </h3>
-              <p className="text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-300 leading-relaxed">
                 Get help whenever you need it with our round-the-clock customer
                 support team.
               </p>
@@ -284,18 +321,18 @@ const Home = () => {
 
       <section className="section-spacing bg-slate-700">
         <div className="max-w-7xl mx-auto container-padding">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-4 py-2 bg-yellow-400 bg-opacity-20 text-yellow-400 rounded-full text-sm font-semibold mb-4">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-yellow-400 bg-opacity-20 text-yellow-400 rounded-full text-xs font-semibold mb-4">
               <Star className="h-4 w-4 mr-2" />
               Featured Products
             </div>
             <h2
-              className="text-4xl md:text-5xl font-bold text-white mb-6"
+              className="text-2xl md:text-3xl font-bold text-white mb-4"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Handpicked for You
             </h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-base md:text-lg text-slate-300 max-w-3xl mx-auto">
               Discover our carefully selected products, chosen for their
               exceptional quality, value, and customer satisfaction.
             </p>
@@ -307,19 +344,19 @@ const Home = () => {
             </div>
           ) : (
             <div className="product-grid">
-              {featuredProducts?.data?.slice(0, 8).map((product) => (
-                <ProductCard key={product._id} product={product} />
+              {getDisplayProducts().map((product, index) => (
+                <ProductCard key={`${product._id}-${index}`} product={product} />
               ))}
             </div>
           )}
 
-          <div className="text-center mt-16">
+          <div className="text-center mt-12">
             <Link
               to="/products"
-              className="btn-primary text-lg px-10 py-4 shadow-lg hover:shadow-xl"
+              className="btn-primary text-base px-8 py-3.5 shadow-lg hover:shadow-xl"
             >
               View All Products
-              <ArrowRight className="ml-3 h-6 w-6" />
+              <ArrowRight className="ml-3 h-5 w-5" />
             </Link>
           </div>
         </div>
@@ -327,14 +364,14 @@ const Home = () => {
 
       <section className="section-spacing bg-slate-800">
         <div className="max-w-7xl mx-auto container-padding">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2
-              className="text-4xl md:text-5xl font-bold text-white mb-6"
+              className="text-2xl md:text-3xl font-bold text-white mb-4"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Shop by Category
             </h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-base md:text-lg text-slate-300 max-w-3xl mx-auto">
               Find exactly what you're looking for in our comprehensive product
               categories.
             </p>
@@ -359,11 +396,11 @@ const Home = () => {
                       className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-80 group-hover:opacity-90 transition-opacity duration-300`}
                     ></div>
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6">
-                      <div className="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                        <IconComponent className="h-8 w-8" />
+                      <div className="w-14 h-14 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <IconComponent className="h-7 w-7" />
                       </div>
                       <h3
-                        className="text-xl font-bold text-center"
+                        className="text-lg font-bold text-center"
                         style={{ fontFamily: "var(--font-heading)" }}
                       >
                         {category.name}
@@ -379,18 +416,18 @@ const Home = () => {
 
       <section className="section-spacing bg-slate-900 border-t border-slate-800">
         <div className="max-w-7xl mx-auto container-padding">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-4 py-2 bg-yellow-400 bg-opacity-20 text-yellow-400 rounded-full text-sm font-semibold mb-4">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-yellow-400 bg-opacity-20 text-yellow-400 rounded-full text-xs font-semibold mb-4">
               <Sparkles className="h-4 w-4 mr-2" />
               Testimonials
             </div>
             <h2
-              className="text-4xl md:text-5xl font-bold text-white mb-6"
+              className="text-2xl md:text-3xl font-bold text-white mb-4"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               What Our Customers Say
             </h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-base md:text-lg text-slate-300 max-w-3xl mx-auto">
               Read real reviews from our satisfied shoppers who experienced our premium service and fast shipping.
             </p>
           </div>
@@ -423,19 +460,19 @@ const Home = () => {
                 <div>
                   <div className="flex items-center gap-1 text-yellow-400 mb-4">
                     {Array.from({ length: review.rating }).map((_, idx) => (
-                      <Star key={idx} className="h-5 w-5 fill-current" />
+                      <Star key={idx} className="h-4 w-4 fill-current" />
                     ))}
                   </div>
-                  <p className="text-slate-300 italic mb-6 leading-relaxed">
+                  <p className="text-sm text-slate-300 italic mb-6 leading-relaxed">
                     "{review.comment}"
                   </p>
                 </div>
                 <div className="flex items-center justify-between border-t border-slate-700 pt-4 mt-auto">
                   <div>
-                    <h4 className="text-white font-semibold text-lg">{review.name}</h4>
-                    <span className="text-xs text-yellow-400 font-medium">{review.role}</span>
+                    <h4 className="text-white font-semibold text-base">{review.name}</h4>
+                    <span className="text-[10px] text-yellow-400 font-medium">{review.role}</span>
                   </div>
-                  <span className="text-xs text-slate-500 font-medium">{review.date}</span>
+                  <span className="text-[10px] text-slate-500 font-medium">{review.date}</span>
                 </div>
               </div>
             ))}

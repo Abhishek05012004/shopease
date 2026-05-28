@@ -67,20 +67,20 @@ const Orders = () => {
   return (
     <div className="min-h-screen bg-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-white mb-8">My Orders</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-white mb-6">My Orders</h1>
 
         {orders?.data?.length === 0 ? (
           <div className="text-center py-16">
-            <Package className="mx-auto h-24 w-24 text-slate-400 mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <Package className="mx-auto h-20 w-20 text-slate-400 mb-4" />
+            <h2 className="text-lg sm:text-xl font-bold text-white mb-4">
               No orders yet
             </h2>
-            <p className="text-slate-300 mb-8">
+            <p className="text-slate-300 text-sm mb-8">
               When you place your first order, it will appear here.
             </p>
             <Link
               to="/products"
-              className="inline-block bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-semibold px-6 py-3 rounded-lg transition-colors"
+              className="inline-block bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-semibold px-6 py-3 rounded-lg transition-colors text-sm"
             >
               Start Shopping
             </Link>
@@ -97,12 +97,12 @@ const Orders = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center space-x-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-white">
-                          Order #{order._id.slice(-8)}
+                        <h3 className="text-sm sm:text-base font-semibold text-white">
+                          Order <span className="text-yellow-400">#{order._id.slice(-8)}</span>
                         </h3>
-                        <div className="flex items-center space-x-4 text-sm text-slate-300 mt-1">
+                        <div className="flex items-center space-x-4 text-xs sm:text-sm text-slate-300 mt-1">
                           <div className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-1" />
+                            <Calendar className="h-3.5 w-3.5 mr-1" />
                             {formatDate(order.createdAt)}
                           </div>
                           <div className="flex items-center">
@@ -124,7 +124,7 @@ const Orders = () => {
                       </span>
                       <Link
                         to={`/orders/${order._id}`}
-                        className="btn-outline text-sm"
+                        className="btn-outline text-xs sm:text-sm"
                       >
                         View Details
                       </Link>
@@ -145,7 +145,7 @@ const Orders = () => {
                         )}`;
 
                       return (
-                        <div key={item._id} className="flex items-center gap-4">
+                        <div key={item._id} className="flex items-start gap-4">
                           {/* fixed columns for alignment */}
                           <div className="w-16 shrink-0">
                             <img
@@ -154,16 +154,23 @@ const Orders = () => {
                               className="w-16 h-16 object-cover rounded-lg"
                             />
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-medium text-white truncate">
-                              {name}
-                            </h4>
-                            <p className="text-sm text-slate-300">Qty: {qty}</p>
-                          </div>
-                          <div className="w-28 text-right">
-                            <p className="text-sm font-semibold text-slate-100">
-                              ₹{(item.price * qty).toFixed(2)}
-                            </p>
+                          <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <h4 className="text-sm font-semibold text-white break-normal leading-tight">
+                                {name}
+                              </h4>
+                              <div className="flex flex-wrap gap-x-3 text-xs text-slate-400 mt-1">
+                                <span>Qty: {qty}</span>
+                                <span className="hidden sm:inline text-slate-600">|</span>
+                                <span>Price: ₹{item.price.toFixed(2)}</span>
+                              </div>
+                            </div>
+                            <div className="sm:w-24 sm:shrink-0 sm:text-right mt-1 sm:mt-0">
+                              <p className="text-sm font-semibold text-slate-100">
+                                <span className="inline sm:hidden text-slate-400 text-xs font-normal mr-1">Total:</span>
+                                ₹{(item.price * qty).toFixed(2)}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       );
@@ -179,19 +186,23 @@ const Orders = () => {
 
                 {/* Order Footer */}
                 <div className="px-6 py-4 bg-slate-700 border-t border-slate-600">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4 text-sm text-slate-300">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-slate-300">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:items-center gap-2 sm:gap-4">
                       <div className="flex items-center">
-                        <Truck className="h-4 w-4 mr-1" />
-                        {order.isDelivered
-                          ? `Delivered on ${formatDate(order.deliveredAt)}`
-                          : "Not delivered yet"}
+                        <Truck className="h-4 w-4 mr-1.5 text-slate-400 shrink-0" />
+                        <span>
+                          {order.isDelivered
+                            ? `Delivered on ${formatDate(order.deliveredAt)}`
+                            : "Not delivered yet"}
+                        </span>
                       </div>
-                      <div>Payment: {order.isPaid ? "Paid" : "Pending"}</div>
+                      <div className="flex items-center sm:before:content-['|'] sm:before:mr-4 sm:before:text-slate-500">
+                        <span>Payment: {order.isPaid ? "Paid" : "Pending"}</span>
+                      </div>
                     </div>
-                    <div className="text-sm">
-                      <span className="text-slate-300">Total: </span>
-                      <span className="font-semibold text-white">
+                    <div className="flex items-center sm:justify-end border-t border-slate-600 pt-2.5 sm:border-0 sm:pt-0">
+                      <span className="text-slate-300 mr-1.5">Total:</span>
+                      <span className="font-semibold text-yellow-400 text-base">
                         ₹{order.totalPrice.toFixed(2)}
                       </span>
                     </div>

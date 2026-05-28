@@ -325,4 +325,52 @@ router.post("/:id/reviews", protect, async (req, res) => {
   }
 });
 
+// @route   DELETE /api/products/:id/reviews/:reviewId
+// @desc    Delete a review
+// @access  Private
+router.delete("/:id/reviews/:reviewId", protect, async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      const reviewIndex = product.reviews.findIndex(
+        (r) => r._id.toString() === req.params.reviewId
+      );
+
+      if (reviewIndex === -1) {
+        return res.status(404).json({ message: "Review not found" });
+      }
+
+      const review = product.reviews[reviewIndex];
+
+      // Check if user owns the review or is admin
+      if (
+        review.user.toString() === req.user._id.toString() ||
+        req.user.role === "admin"
+      ) {
+        product.reviews.splice(reviewIndex, 1);
+        product.numReviews = product.reviews.length;
+        
+        if (product.reviews.length > 0) {
+          product.rating =
+            product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+            product.reviews.length;
+        } else {
+          product.rating = 0;
+        }
+
+        await product.save();
+        return res.json({ message: "Review deleted successfully" });
+      } else {
+        return res.status(401).json({ message: "Not authorized to delete this review" });
+      }
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

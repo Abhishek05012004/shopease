@@ -58,6 +58,12 @@ const Register = () => {
       toast.error("Please enter Name and Email to receive OTP");
       return;
     }
+    const emailTrimmed = (formData.email || "").trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailTrimmed)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
     try {
       setOtpLoading(true);
       await authAPI.sendOtp(formData.email);
@@ -146,15 +152,15 @@ const Register = () => {
       </div>
 
       {/* Right Side - Register Form */}
-      <div className="flex-1 flex items-center justify-center bg-gray-50 p-8">
+      <div className="flex-1 flex items-center justify-center bg-gray-50 p-4 sm:p-8">
         <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
             <div className="text-center mb-8">
               <div className="lg:hidden w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Store className="h-8 w-8 text-white" />
               </div>
               <h2
-                className="text-3xl font-bold text-gray-900 mb-2"
+                className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
                 Create your account

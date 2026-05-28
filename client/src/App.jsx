@@ -25,6 +25,17 @@ import Wishlist from "./pages/Wishlist";
 import PaymentFailed from "./pages/PaymentFailed";
 import CheckoutVerify from "./pages/CheckoutVerify";
 
+// New Customer Service & Policy Pages
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Shipping from "./pages/Shipping";
+import Returns from "./pages/Returns";
+import TrackOrder from "./pages/TrackOrder";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import RefundPolicy from "./pages/RefundPolicy";
+import SocialComingSoon from "./pages/SocialComingSoon";
+
 const AdminRedirect = ({ children }) => {
   const { user, isAuthenticated } = useAuth();
 
@@ -86,6 +97,17 @@ function App() {
                 path="/forgot-password"
                 element={<ForgotPassword />}
               />
+
+              {/* Customer Service & Legal Routes */}
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/shipping" element={<Shipping />} />
+              <Route path="/returns" element={<Returns />} />
+              <Route path="/track-order" element={<TrackOrder />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/social-setup" element={<SocialComingSoon />} />
 
               {/* Protected Routes - Redirect admins to dashboard */}
               <Route

@@ -78,17 +78,17 @@ const AdminUsers = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">User Management</h1>
-        <p className="text-slate-300 mt-2">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">User Management</h1>
+        <p className="text-slate-300 text-xs sm:text-sm mt-1 sm:mt-2">
           Manage user accounts and permissions
         </p>
       </div>
 
       {/* Filters */}
-      <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6 mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
+      <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6 mb-6">
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -97,15 +97,15 @@ const AdminUsers = () => {
                 placeholder="Search by name or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm sm:text-base placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               />
             </div>
           </div>
-          <div className="md:w-48">
+          <div className="sm:w-48">
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              className="w-full px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
             >
               <option value="">All Roles</option>
               <option value="user">Users</option>
@@ -115,8 +115,69 @@ const AdminUsers = () => {
         </div>
       </div>
 
-      {/* Users Table */}
-      <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 overflow-hidden">
+      {/* Mobile-friendly Cards (Visible on mobile/tablet, hidden on desktop) */}
+      <div className="md:hidden space-y-4 mb-6">
+        {filteredUsers?.map((user) => (
+          <div key={user._id} className="bg-slate-800 rounded-lg p-4 border border-slate-700 space-y-4 shadow-md">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center shrink-0">
+                <span className="text-slate-900 font-bold text-sm">
+                  {user.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-semibold text-white break-words">{user.name}</h3>
+                <p className="text-xs text-slate-400">ID: {user._id.slice(-8)}</p>
+              </div>
+              <div className="shrink-0">
+                <span
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium ${
+                    user.role === "admin"
+                      ? "bg-purple-900 text-purple-200"
+                      : "bg-blue-900 text-blue-200"
+                  }`}
+                >
+                  {user.role === "admin" ? (
+                    <Shield className="h-3 w-3 mr-1" />
+                  ) : (
+                    <User className="h-3 w-3 mr-1" />
+                  )}
+                  {user.role}
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-700 text-xs space-y-2">
+              <div>
+                <span className="text-slate-400 block mb-0.5">Email</span>
+                <span className="text-white block break-all">{user.email}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block mb-0.5">Joined</span>
+                <span className="text-white block">{formatDate(user.createdAt)}</span>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-3 border-t border-slate-700">
+              {user.role !== "admin" ? (
+                <button
+                  onClick={() => handleDeleteUser(user._id)}
+                  className="text-red-400 hover:text-red-300 p-2 rounded bg-slate-700/50 hover:bg-slate-700 transition-colors flex items-center justify-center text-xs font-semibold w-full sm:w-auto"
+                  disabled={deleteUserMutation.isLoading}
+                  title="Delete User"
+                >
+                  <Trash2 className="h-4 w-4 mr-1.5" /> Delete User
+                </button>
+              ) : (
+                <span className="text-xs text-slate-500 italic">No Actions</span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Users Table (Visible on Desktop) */}
+      <div className="hidden md:block bg-slate-800 rounded-lg shadow-sm border border-slate-700 overflow-hidden mb-6">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-700">
             <thead className="bg-slate-900">
@@ -204,33 +265,33 @@ const AdminUsers = () => {
             </tbody>
           </table>
         </div>
-
-        {filteredUsers?.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-slate-400">
-              No users found matching your criteria.
-            </p>
-          </div>
-        )}
       </div>
 
+      {filteredUsers?.length === 0 && (
+        <div className="text-center py-12 bg-slate-800 rounded-lg border border-slate-700">
+          <p className="text-slate-400 text-sm">
+            No users found matching your criteria.
+          </p>
+        </div>
+      )}
+
       {/* Summary Stats */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6">
-          <h3 className="text-lg font-semibold text-white">Total Users</h3>
-          <p className="text-3xl font-bold text-yellow-500 mt-2">
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6">
+          <h3 className="text-sm sm:text-base md:text-lg font-semibold text-slate-300">Total Users</h3>
+          <p className="text-2xl sm:text-3xl font-bold text-yellow-500 mt-2">
             {users?.data?.length || 0}
           </p>
         </div>
-        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6">
-          <h3 className="text-lg font-semibold text-white">Regular Users</h3>
-          <p className="text-3xl font-bold text-blue-400 mt-2">
+        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6">
+          <h3 className="text-sm sm:text-base md:text-lg font-semibold text-slate-300">Regular Users</h3>
+          <p className="text-2xl sm:text-3xl font-bold text-blue-400 mt-2">
             {users?.data?.filter((user) => user.role === "user").length || 0}
           </p>
         </div>
-        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6">
-          <h3 className="text-lg font-semibold text-white">Administrators</h3>
-          <p className="text-3xl font-bold text-purple-400 mt-2">
+        <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6">
+          <h3 className="text-sm sm:text-base md:text-lg font-semibold text-slate-300">Administrators</h3>
+          <p className="text-2xl sm:text-3xl font-bold text-purple-400 mt-2">
             {users?.data?.filter((user) => user.role === "admin").length || 0}
           </p>
         </div>

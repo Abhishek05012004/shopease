@@ -100,14 +100,26 @@ router.get("/", protect, async (req, res) => {
 });
 
 // @route   GET /api/orders/:id
-// @desc    Get order by ID
+// @desc    Get order by ID (supports 24-character full ID or 8-character suffix ID)
 // @access  Private
 router.get("/:id", protect, async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate(
-      "user",
-      "name email"
-    );
+    let order;
+    const isHex24 = req.params.id.match(/^[0-9a-fA-F]{24}$/);
+
+    if (req.params.id.length === 8) {
+      // Find the order suffix match among the user's orders (or all orders if admin)
+      let query = {};
+      if (req.user.role !== "admin") {
+        query.user = req.user._id;
+      }
+      const orders = await Order.find(query).populate("user", "name email");
+      order = orders.find(
+        (o) => o._id.toString().slice(-8).toLowerCase() === req.params.id.toLowerCase()
+      );
+    } else if (isHex24) {
+      order = await Order.findById(req.params.id).populate("user", "name email");
+    }
 
     if (order) {
       // Check if user owns this order or is admin
@@ -232,6 +244,10 @@ router.put("/:id/status", protect, admin, async (req, res) => {
     console.log(
       `[v0] Updating order ${req.params.id} status from ${order.status} to ${status}`
     );
+
+    if (status === "Cancelled") {
+      order.cancelledFromStatus = order.status;
+    }
 
     order.status = status;
     if (status === "Delivered") {

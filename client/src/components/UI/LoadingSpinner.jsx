@@ -5,7 +5,11 @@ const LoadingSpinner = ({ size = "medium" }) => {
     large: "w-12 h-12",
   }
 
-  return <div className={`spinner ${sizeClasses[size]}`}></div>
+  return (
+    <div className="flex items-center justify-center w-full py-4">
+      <div className={`spinner ${sizeClasses[size]}`}></div>
+    </div>
+  )
 }
 
 export default LoadingSpinner

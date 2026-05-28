@@ -72,18 +72,20 @@ const AdminHeader = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/admin/dashboard" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center">
+          <Link to="/admin/dashboard" className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity">
+            <div className="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center shrink-0">
               <Store className="text-slate-800 h-6 w-6" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-yellow-400">ShopEase Admin</span>
-              <span className="text-xs text-slate-400 -mt-1">Management Portal</span>
+            <div className="hidden min-[380px]:flex flex-col">
+              <span className="text-lg sm:text-xl font-bold text-yellow-400">
+                ShopEase<span className="hidden sm:inline"> Admin</span>
+              </span>
+              <span className="text-[10px] sm:text-xs text-slate-400 -mt-1 hidden sm:inline-block">Management Portal</span>
             </div>
           </Link>
-
+ 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden xl:flex items-center space-x-6">
             <Link
               to="/admin/dashboard"
               className="flex items-center text-slate-300 hover:text-yellow-400 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-slate-700"
@@ -113,7 +115,7 @@ const AdminHeader = () => {
               Users
             </Link>
           </nav>
-
+ 
           {/* Right Side */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
@@ -129,10 +131,10 @@ const AdminHeader = () => {
                   </span>
                 )}
               </button>
-
+ 
               {/* Notifications Dropdown */}
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 bg-slate-800 rounded-lg shadow-xl border border-slate-700 z-50">
+                <div className="fixed sm:absolute top-16 sm:top-auto right-4 sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-[320px] bg-slate-800 rounded-lg shadow-xl border border-slate-700 z-50">
                   <div className="p-4 border-b border-slate-700 flex justify-between items-center">
                     <h3 className="text-sm font-semibold text-white">New Orders ({notifications.length})</h3>
                     {notifications.length > 0 && (
@@ -172,27 +174,20 @@ const AdminHeader = () => {
                 </div>
               )}
             </div>
-
+ 
             {/* User Menu */}
             <div className="relative group">
               <button className="flex items-center space-x-2 text-slate-300 hover:text-yellow-400 transition-colors px-3 py-2 rounded-lg hover:bg-slate-700">
                 <User className="h-5 w-5" />
-                <span className="text-sm font-medium">{user?.name}</span>
+                <span className="text-sm font-medium hidden sm:inline">{user?.name}</span>
               </button>
-
+ 
               <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-xl border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <div className="p-3 border-b border-slate-700">
                   <p className="text-sm font-medium text-white">{user?.name}</p>
                   <p className="text-xs text-slate-400">{user?.email}</p>
                 </div>
                 <div className="py-2">
-                  <Link
-                    to="/profile"
-                    className="flex items-center px-4 py-2 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 transition-colors"
-                  >
-                    <Settings className="h-4 w-4 mr-3" />
-                    Settings
-                  </Link>
                   <button
                     onClick={handleLogout}
                     className="flex items-center w-full text-left px-4 py-2 text-red-400 hover:bg-red-900 hover:bg-opacity-20 transition-colors"
@@ -203,55 +198,55 @@ const AdminHeader = () => {
                 </div>
               </div>
             </div>
-
+ 
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-slate-300 hover:text-yellow-400 transition-colors rounded-lg hover:bg-slate-700"
+              className="xl:hidden p-2 text-slate-300 hover:text-yellow-400 transition-colors rounded-lg hover:bg-slate-700"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-slate-700 py-4 space-y-2">
-            <Link
-              to="/admin/dashboard"
-              className="flex items-center py-3 px-4 text-slate-300 hover:text-yellow-400 hover:bg-slate-700 rounded-lg transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <BarChart3 className="h-4 w-4 mr-3" />
-              Dashboard
-            </Link>
-            <Link
-              to="/admin/products"
-              className="flex items-center py-3 px-4 text-slate-300 hover:text-yellow-400 hover:bg-slate-700 rounded-lg transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <Package className="h-4 w-4 mr-3" />
-              Products
-            </Link>
-            <Link
-              to="/admin/orders"
-              className="flex items-center py-3 px-4 text-slate-300 hover:text-yellow-400 hover:bg-slate-700 rounded-lg transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <ShoppingCart className="h-4 w-4 mr-3" />
-              Orders
-            </Link>
-            <Link
-              to="/admin/users"
-              className="flex items-center py-3 px-4 text-slate-300 hover:text-yellow-400 hover:bg-slate-700 rounded-lg transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <Users className="h-4 w-4 mr-3" />
-              Users
-            </Link>
-          </div>
-        )}
       </div>
+ 
+      {/* Mobile Navigation - positioned absolutely below the header */}
+      {isMenuOpen && (
+        <div className="xl:hidden absolute top-full left-0 right-0 bg-slate-800 border-b border-slate-700 py-4 space-y-1 shadow-2xl z-50">
+          <Link
+            to="/admin/dashboard"
+            className="flex items-center py-2.5 px-4 text-slate-300 hover:text-yellow-400 hover:bg-slate-700 rounded-lg transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <BarChart3 className="h-4 w-4 mr-3" />
+            Dashboard
+          </Link>
+          <Link
+            to="/admin/products"
+            className="flex items-center py-2.5 px-4 text-slate-300 hover:text-yellow-400 hover:bg-slate-700 rounded-lg transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <Package className="h-4 w-4 mr-3" />
+            Products
+          </Link>
+          <Link
+            to="/admin/orders"
+            className="flex items-center py-2.5 px-4 text-slate-300 hover:text-yellow-400 hover:bg-slate-700 rounded-lg transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <ShoppingCart className="h-4 w-4 mr-3" />
+            Orders
+          </Link>
+          <Link
+            to="/admin/users"
+            className="flex items-center py-2.5 px-4 text-slate-300 hover:text-yellow-400 hover:bg-slate-700 rounded-lg transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <Users className="h-4 w-4 mr-3" />
+            Users
+          </Link>
+        </div>
+      )}
     </header>
   )
 }

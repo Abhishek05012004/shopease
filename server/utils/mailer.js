@@ -254,4 +254,93 @@ async function sendOrderCancellation({ to, order }) {
   });
 }
 
-module.exports = { sendOrderConfirmation, sendOtpEmail, sendOrderCancellation };
+async function sendContactFormEmails({ name, email, subject, message }) {
+  // 1. Send detailed email to ShopEase support (process.env.EMAIL_USER)
+  const supportSubject = `New Contact Form Query: ${subject}`;
+  const supportHtml = `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 40px auto; padding: 40px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);">
+      <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px;">
+        <h2 style="color: #1e293b; margin: 0; font-size: 22px; font-weight: 700;">Support Desk Request</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: 8px;">A new customer inquiry has been received</p>
+      </div>
+      
+      <div style="margin-bottom: 24px; font-size: 15px; color: #334155; line-height: 1.6;">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 10px 0; font-weight: 600; color: #64748b; width: 120px;">Sender Name:</td>
+            <td style="padding: 10px 0; color: #1e293b;">${name}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 10px 0; font-weight: 600; color: #64748b;">Sender Email:</td>
+            <td style="padding: 10px 0; color: #1e293b;"><a href="mailto:${email}" style="color: #854d0e; text-decoration: none; font-weight: 500;">${email}</a></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 10px 0; font-weight: 600; color: #64748b;">Subject:</td>
+            <td style="padding: 10px 0; color: #1e293b; font-weight: 500;">${subject}</td>
+          </tr>
+        </table>
+        
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; color: #1e293b;">
+          <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Message Details:</h4>
+          <p style="margin: 0; white-space: pre-wrap; font-size: 15px; color: #334155;">${message}</p>
+        </div>
+      </div>
+      
+      <div style="border-top: 1px solid #f1f5f9; padding-top: 24px; text-align: center;">
+        <p style="color: #94a3b8; font-size: 12px; margin: 0;">ShopEase Automated Support System</p>
+      </div>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"ShopEase Support Desk" <${process.env.EMAIL_USER}>`,
+    to: process.env.EMAIL_USER,
+    subject: supportSubject,
+    text: `Sender: ${name} (${email})\nSubject: ${subject}\n\nMessage:\n${message}`,
+    html: supportHtml,
+  });
+
+  // 2. Send auto-acknowledgement reply to the customer's email
+  const customerSubject = `We've received your query - ShopEase Support`;
+  const customerHtml = `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 40px auto; padding: 40px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <div style="display: inline-block; background-color: #fef08a; padding: 12px; border-radius: 12px; margin-bottom: 16px;">
+          <span style="font-size: 24px; font-weight: bold; color: #854d0e;">SE</span>
+        </div>
+        <h2 style="color: #1e293b; margin: 0; font-size: 22px; font-weight: 700;">Query Received!</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: 8px;">Ticket Reference: SE-${Date.now().toString().slice(-6)}</p>
+      </div>
+      
+      <div style="border-top: 1px solid #f1f5f9; padding-top: 24px; margin-bottom: 24px; font-size: 15px; color: #334155; line-height: 1.6;">
+        <p style="margin: 0 0 16px 0;">Hello ${name},</p>
+        <p style="margin: 0 0 16px 0;">Thank you for getting in touch with ShopEase Support. We have received your query regarding <strong>"${subject}"</strong>.</p>
+        <p style="margin: 0 0 24px 0;">Our dedicated customer support agents are already reviewing your details and we will reach out to you with an update soon.</p>
+        
+        <div style="background-color: #fcfcfc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+          <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #64748b; font-weight: 600;">Your Message Copy:</h4>
+          <p style="margin: 0; font-style: italic; color: #475569; font-size: 14px;">"${message}"</p>
+        </div>
+        
+        <p style="margin: 0; font-size: 13.5px; color: #64748b;">
+          *Please note: ShopEase has a strict final sale policy. Order cancellations, returns, or exchange requests are not accepted.
+        </p>
+      </div>
+      
+      <div style="border-top: 1px solid #f1f5f9; padding-top: 24px; text-align: center;">
+        <p style="color: #94a3b8; font-size: 12px; margin: 0 0 8px 0;">This is an automated receipt confirmation. Please do not reply directly to this mail.</p>
+        <p style="color: #64748b; font-size: 13px; font-weight: 600; margin: 0;">ShopEase Inc.</p>
+      </div>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"ShopEase Support Desk" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: customerSubject,
+    text: `Hello ${name},\n\nWe have received your message regarding "${subject}". We will contact you soon.\n\nShopEase Inc.`,
+    html: customerHtml,
+  });
+}
+
+module.exports = { sendOrderConfirmation, sendOtpEmail, sendOrderCancellation, sendContactFormEmails };

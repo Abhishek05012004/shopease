@@ -17,7 +17,7 @@ const api = axios.create({
 // Add auth token to requests
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -45,6 +45,7 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
       // Only redirect if not already on auth pages and not an API call from auth verification
       const currentPath = window.location.pathname;
       const isAuthPage =
@@ -84,6 +85,7 @@ export const productsAPI = {
   updateProduct: (id, data) => api.put(`/products/${id}`, data),
   deleteProduct: (id) => api.delete(`/products/${id}`),
   addReview: (id, data) => api.post(`/products/${id}/reviews`, data),
+  deleteReview: (id, reviewId) => api.delete(`/products/${id}/reviews/${reviewId}`),
 };
 
 // Cart API

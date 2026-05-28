@@ -89,8 +89,8 @@ const Wishlist = () => {
     <div className="min-h-screen bg-slate-800 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-white">My Wishlist</h1>
-          <span className="text-slate-300">
+          <h1 className="text-xl sm:text-2xl font-bold text-white">My Wishlist</h1>
+          <span className="text-slate-300 text-sm">
             {items.length} {items.length === 1 ? "item" : "items"}
           </span>
         </div>
@@ -154,7 +154,7 @@ const Wishlist = () => {
 
                 {/* Product Name */}
                 <Link to={`/products/${product._id}`}>
-                  <h3 className="text-lg font-bold text-slate-100 hover:text-yellow-400 transition-colors line-clamp-2 mb-3 leading-tight min-h-[3.5rem]">
+                  <h3 className="text-base font-bold text-slate-100 hover:text-yellow-400 transition-colors line-clamp-2 mb-3 leading-tight min-h-[3rem]">
                     {product.name}
                   </h3>
                 </Link>
@@ -164,11 +164,11 @@ const Wishlist = () => {
                   {/* Price */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">
-                      <span className="text-2xl font-bold text-yellow-400">
+                      <span className="text-xl font-bold text-yellow-400">
                         ₹{product.price}
                       </span>
                       {product.originalPrice > product.price && (
-                        <span className="text-sm text-slate-500 line-through">
+                        <span className="text-xs text-slate-500 line-through">
                           ₹{product.originalPrice}
                         </span>
                       )}
@@ -186,25 +186,25 @@ const Wishlist = () => {
                     {isInCart(product._id) ? (
                       <button
                         onClick={() => navigate(`/cart#cart-item-${product._id}`)}
-                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
+                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-3 rounded-lg text-sm transition-colors flex items-center justify-center"
                       >
-                        <ShoppingCart className="h-5 w-5 mr-2" />
+                        <ShoppingCart className="h-4.5 w-4.5 mr-1.5" />
                         Go to Cart
                       </button>
                     ) : (
                       <button
                         onClick={() => handleAddToCart(product)}
                         disabled={product.stock === 0}
-                        className="w-full bg-yellow-500 hover:bg-yellow-600 disabled:bg-slate-600 disabled:text-slate-400 text-slate-900 font-semibold py-3 px-4 rounded-lg transition-colors disabled:cursor-not-allowed flex items-center justify-center"
+                        className="w-full bg-yellow-500 hover:bg-yellow-600 disabled:bg-slate-600 disabled:text-slate-400 text-slate-900 font-semibold py-2 px-3 rounded-lg text-sm transition-colors disabled:cursor-not-allowed flex items-center justify-center"
                       >
-                        <ShoppingCart className="h-5 w-5 mr-2" />
+                        <ShoppingCart className="h-4.5 w-4.5 mr-1.5" />
                         {product.stock === 0 ? "Out of Stock" : "Move to Cart"}
                       </button>
                     )}
 
                     <Link
                       to={`/products/${product._id}`}
-                      className="w-full bg-slate-600 hover:bg-slate-500 text-white font-semibold py-3 px-4 rounded-lg transition-colors text-center block"
+                      className="w-full bg-slate-600 hover:bg-slate-500 text-white font-semibold py-2 px-3 rounded-lg text-sm transition-colors text-center block"
                     >
                       View Details
                     </Link>

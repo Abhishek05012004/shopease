@@ -34,17 +34,21 @@ const authReducer = (state, action) => {
   }
 };
 
+const getStoredToken = () => {
+  return localStorage.getItem("token") || sessionStorage.getItem("token");
+};
+
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, {
     user: null,
-    token: localStorage.getItem("token"),
-    isAuthenticated: !!localStorage.getItem("token"),
-    loading: !!localStorage.getItem("token"),
+    token: getStoredToken(),
+    isAuthenticated: !!getStoredToken(),
+    loading: !!getStoredToken(),
     error: null,
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = getStoredToken();
     if (token) {
       console.log("Found stored token, verifying...");
       // Verify token and get user profile
@@ -63,6 +67,7 @@ export const AuthProvider = ({ children }) => {
             error.response?.data?.message
           );
           localStorage.removeItem("token");
+          sessionStorage.removeItem("token");
           dispatch({ type: "LOGOUT" });
         });
     } else {
@@ -70,14 +75,20 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe = false) => {
     try {
       console.log("Attempting login for:", email);
       dispatch({ type: "LOGIN_START" });
       const response = await authAPI.login(email, password);
 
       console.log("Login successful:", response.data);
-      localStorage.setItem("token", response.data.token);
+      if (rememberMe) {
+        localStorage.setItem("token", response.data.token);
+        sessionStorage.removeItem("token");
+      } else {
+        sessionStorage.setItem("token", response.data.token);
+        localStorage.removeItem("token");
+      }
       dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
       toast.success("Login successful!");
 
@@ -98,7 +109,9 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.register(name, email, password, otp);
 
       console.log("Registration successful:", response.data);
+      // By default, treat registration as remembered
       localStorage.setItem("token", response.data.token);
+      sessionStorage.removeItem("token");
       dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
       toast.success("Registration successful!");
 
@@ -117,6 +130,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     console.log("Logging out user");
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     dispatch({ type: "LOGOUT" });
     toast.success("Logged out successfully");
   };

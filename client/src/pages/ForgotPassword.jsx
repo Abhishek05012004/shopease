@@ -118,7 +118,7 @@ const ForgotPassword = () => {
       </div>
 
       {/* Right Panel - Forgot Password Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
@@ -130,9 +130,9 @@ const ForgotPassword = () => {
             </Link>
           </div>
 
-          <div className="bg-slate-700 rounded-2xl shadow-xl p-8 border border-slate-600">
+          <div className="bg-slate-700 rounded-2xl shadow-xl p-6 sm:p-8 border border-slate-600">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-2">Forgot Password</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Forgot Password</h2>
               <p className="text-slate-300">
                 {!isOtpSent
                   ? "Enter your registered email to receive an OTP verification code"

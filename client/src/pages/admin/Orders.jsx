@@ -195,17 +195,17 @@ const AdminOrders = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Order Management</h1>
-        <p className="text-slate-300 mt-2">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">Order Management</h1>
+        <p className="text-slate-300 text-xs sm:text-sm mt-1 sm:mt-2">
           Track and manage all customer orders with delivery status
         </p>
       </div>
 
       {/* Enhanced Filters */}
-      <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6 mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
+      <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6 mb-6">
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -214,15 +214,15 @@ const AdminOrders = () => {
                 placeholder="Search by order ID, customer name, or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm sm:text-base placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               />
             </div>
           </div>
-          <div className="md:w-48">
+          <div className="sm:w-48">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              className="w-full px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
             >
               <option value="">All Statuses</option>
               <option value="Pending">Pending</option>
@@ -235,8 +235,99 @@ const AdminOrders = () => {
         </div>
       </div>
 
-      {/* Enhanced Orders Table */}
-      <div className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 overflow-hidden">
+      {/* Mobile-friendly Cards (Visible on mobile/tablet, hidden on desktop) */}
+      <div className="md:hidden space-y-4 mb-6">
+        {filteredOrders?.map((order) => {
+          const isHighlighted = order._id === highlightId;
+          return (
+            <div
+              key={order._id}
+              id={`order-${order._id}`}
+              className={`bg-slate-800 rounded-lg p-4 border transition-all duration-500 shadow-md space-y-4 ${
+                isHighlighted
+                  ? "ring-2 ring-yellow-500 border-transparent shadow-lg shadow-yellow-500/10"
+                  : "border-slate-700"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-sm font-semibold text-white">#{order._id.slice(-8)}</span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">{formatDate(order.createdAt)}</span>
+                </div>
+                <span
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium border ${getStatusColor(
+                    order.status
+                  )}`}
+                >
+                  {getStatusIcon(order.status)}
+                  <span className="ml-1 text-[10px]">{order.status}</span>
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-700 text-xs">
+                <div>
+                  <span className="text-slate-400 block mb-0.5">Customer</span>
+                  <span className="text-white font-medium block break-words">{order.user?.name}</span>
+                  <span className="text-slate-400 block break-all text-[10px]">{order.user?.email}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block mb-0.5">Items & Total</span>
+                  <span className="text-slate-300 block">{order.orderItems.length} items</span>
+                  <span className="text-white font-semibold">₹{order.totalPrice.toFixed(2)}</span>
+                </div>
+              </div>
+
+              {order.trackingNumber && (
+                <div className="bg-slate-700/50 p-2 rounded text-[10px] text-slate-400 border border-slate-600/50">
+                  Tracking Number: <span className="text-slate-200">{order.trackingNumber}</span>
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-700">
+                <button
+                  onClick={() => handleViewOrder(order)}
+                  className="text-blue-400 hover:text-blue-300 p-2 rounded bg-slate-700/50 hover:bg-slate-700 transition-colors flex items-center justify-center flex-1 text-xs font-semibold"
+                  title="View Details"
+                >
+                  <Eye className="h-4 w-4 mr-1" /> Details
+                </button>
+                {getNextStatus(order.status) && (
+                  <button
+                    onClick={() =>
+                      handleStatusUpdate(
+                        order._id,
+                        order.status,
+                        getNextStatus(order.status)
+                      )
+                    }
+                    className="text-green-400 hover:text-green-300 p-2 rounded bg-slate-700/50 hover:bg-slate-700 border border-green-600/30 hover:border-green-600 transition-colors flex items-center justify-center flex-1 text-xs font-semibold"
+                    disabled={updateOrderStatusMutation.isLoading}
+                  >
+                    {getNextStatus(order.status)}
+                  </button>
+                )}
+                <select
+                  value={order.status}
+                  onChange={(e) =>
+                    handleStatusUpdate(order._id, order.status, e.target.value)
+                  }
+                  className="text-xs bg-slate-700 border border-slate-600 rounded p-2 text-white hover:bg-slate-600 focus:outline-none focus:ring-1 focus:ring-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed flex-1"
+                  disabled={updateOrderStatusMutation.isLoading || order.status === "Delivered" || order.status === "Cancelled"}
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Enhanced Orders Table (Visible on Desktop) */}
+      <div className="hidden md:block bg-slate-800 rounded-lg shadow-sm border border-slate-700 overflow-hidden mb-6">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-700">
             <thead className="bg-slate-900">
@@ -271,119 +362,119 @@ const AdminOrders = () => {
                         : "hover:bg-slate-700"
                     }`}
                   >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm font-medium text-white">
-                        #{order._id.slice(-8)}
-                      </div>
-                      <div className="text-sm text-slate-400">
-                        {formatDate(order.createdAt)}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
-                        <User className="h-4 w-4 text-slate-900" />
-                      </div>
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-white">
-                          {order.user?.name}
+                          #{order._id.slice(-8)}
                         </div>
                         <div className="text-sm text-slate-400">
-                          {order.user?.email}
+                          {formatDate(order.createdAt)}
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm text-slate-300">
-                        {order.orderItems.length} item
-                        {order.orderItems.length !== 1 ? "s" : ""}
-                      </div>
-                      <div className="text-sm font-medium text-white">
-                        ₹{order.totalPrice.toFixed(2)}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="space-y-2">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(
-                          order.status
-                        )}`}
-                      >
-                        {getStatusIcon(order.status)}
-                        <span className="ml-1">{order.status}</span>
-                      </span>
-                      {order.trackingNumber && (
-                        <div className="text-xs text-slate-400">
-                          Tracking: {order.trackingNumber}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
+                          <User className="h-4 w-4 text-slate-900" />
                         </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => handleViewOrder(order)}
-                        className="text-blue-400 hover:text-blue-300 p-1 rounded hover:bg-slate-600 transition-colors"
-                        title="View Details"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      {getNextStatus(order.status) && (
-                        <button
-                          onClick={() =>
-                            handleStatusUpdate(
-                              order._id,
-                              order.status,
-                              getNextStatus(order.status)
-                            )
-                          }
-                          className="text-green-400 hover:text-green-300 text-xs px-2 py-1 border border-green-600 rounded hover:bg-green-900/20 transition-colors"
-                          disabled={updateOrderStatusMutation.isLoading}
-                          title={`Mark as ${getNextStatus(order.status)}`}
+                        <div>
+                          <div className="text-sm font-medium text-white">
+                            {order.user?.name}
+                          </div>
+                          <div className="text-sm text-slate-400">
+                            {order.user?.email}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm text-slate-300">
+                          {order.orderItems.length} item
+                          {order.orderItems.length !== 1 ? "s" : ""}
+                        </div>
+                        <div className="text-sm font-medium text-white">
+                          ₹{order.totalPrice.toFixed(2)}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="space-y-2">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(
+                            order.status
+                          )}`}
                         >
-                          {getNextStatus(order.status)}
+                          {getStatusIcon(order.status)}
+                          <span className="ml-1">{order.status}</span>
+                        </span>
+                        {order.trackingNumber && (
+                          <div className="text-xs text-slate-400">
+                            Tracking: {order.trackingNumber}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleViewOrder(order)}
+                          className="text-blue-400 hover:text-blue-300 p-1 rounded hover:bg-slate-600 transition-colors"
+                          title="View Details"
+                        >
+                          <Eye className="h-4 w-4" />
                         </button>
-                      )}
-                      <select
-                        value={order.status}
-                        onChange={(e) =>
-                          handleStatusUpdate(order._id, order.status, e.target.value)
-                        }
-                        className="text-xs bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white hover:bg-slate-600 focus:outline-none focus:ring-1 focus:ring-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={updateOrderStatusMutation.isLoading || order.status === "Delivered" || order.status === "Cancelled"}
-                      >
-                        <option value="Pending">Pending</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </div>
-                  </td>
-                </tr>
+                        {getNextStatus(order.status) && (
+                          <button
+                            onClick={() =>
+                              handleStatusUpdate(
+                                order._id,
+                                order.status,
+                                getNextStatus(order.status)
+                              )
+                            }
+                            className="text-green-400 hover:text-green-300 text-xs px-2 py-1 border border-green-600 rounded hover:bg-green-900/20 transition-colors"
+                            disabled={updateOrderStatusMutation.isLoading}
+                            title={`Mark as ${getNextStatus(order.status)}`}
+                          >
+                            {getNextStatus(order.status)}
+                          </button>
+                        )}
+                        <select
+                          value={order.status}
+                          onChange={(e) =>
+                            handleStatusUpdate(order._id, order.status, e.target.value)
+                          }
+                          className="text-xs bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white hover:bg-slate-600 focus:outline-none focus:ring-1 focus:ring-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                          disabled={updateOrderStatusMutation.isLoading || order.status === "Delivered" || order.status === "Cancelled"}
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Processing">Processing</option>
+                          <option value="Shipped">Shipped</option>
+                          <option value="Delivered">Delivered</option>
+                          <option value="Cancelled">Cancelled</option>
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
-
-        {filteredOrders?.length === 0 && (
-          <div className="text-center py-12">
-            <Package className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-            <p className="text-slate-400">
-              No orders found matching your criteria.
-            </p>
-          </div>
-        )}
       </div>
 
+      {filteredOrders?.length === 0 && (
+        <div className="text-center py-12 bg-slate-800 rounded-lg border border-slate-700">
+          <Package className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+          <p className="text-slate-400 text-sm">
+            No orders found matching your criteria.
+          </p>
+        </div>
+      )}
+
       {/* Enhanced Summary Stats */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-5 gap-6">
+      <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
         {["Pending", "Processing", "Shipped", "Delivered", "Cancelled"].map(
           (status) => {
             const count =
@@ -397,15 +488,15 @@ const AdminOrders = () => {
             return (
               <div
                 key={status}
-                className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-6 hover:bg-slate-700 transition-colors"
+                className="bg-slate-800 rounded-lg shadow-sm border border-slate-700 p-4 sm:p-6 hover:bg-slate-700 transition-colors"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-white">{status}</h3>
+                  <h3 className="text-sm sm:text-base font-semibold text-white">{status}</h3>
                   <div className="text-slate-400">{getStatusIcon(status)}</div>
                 </div>
-                <p className="text-3xl font-bold text-white mb-1">{count}</p>
-                <p className="text-sm text-slate-400">
-                  ₹{revenue.toFixed(2)} revenue
+                <p className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-1">{count}</p>
+                <p className="text-[10px] sm:text-xs text-slate-400 truncate">
+                  ₹{revenue.toFixed(2)}
                 </p>
               </div>
             );
@@ -417,36 +508,36 @@ const AdminOrders = () => {
       {showOrderModal && selectedOrder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-slate-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-700">
-            <div className="p-6 border-b border-slate-700">
+            <div className="p-4 sm:p-6 border-b border-slate-700">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-white">
+                <h2 className="text-lg sm:text-xl font-semibold text-white">
                   Order #{selectedOrder._id.slice(-8)}
                 </h2>
                 <button
                   onClick={() => setShowOrderModal(false)}
-                  className="text-slate-400 hover:text-slate-300"
+                  className="text-slate-400 hover:text-slate-300 p-1"
                 >
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5 sm:h-6 sm:w-6" />
                 </button>
               </div>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-4 sm:p-6 space-y-5 sm:space-y-6">
               {/* Customer Info */}
               <div className="bg-slate-700 rounded-lg p-4">
-                <h3 className="font-medium text-white mb-3">
+                <h3 className="text-sm font-semibold text-white mb-3">
                   Customer Information
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   <div className="flex items-center space-x-2">
-                    <User className="h-4 w-4 text-slate-400" />
-                    <span className="text-sm text-slate-300">
+                    <User className="h-4 w-4 text-slate-400 shrink-0" />
+                    <span className="text-xs sm:text-sm text-slate-300 truncate">
                       {selectedOrder.user?.name}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Mail className="h-4 w-4 text-slate-400" />
-                    <span className="text-sm text-slate-300">
+                    <Mail className="h-4 w-4 text-slate-400 shrink-0" />
+                    <span className="text-xs sm:text-sm text-slate-300 truncate">
                       {selectedOrder.user?.email}
                     </span>
                   </div>
@@ -455,15 +546,16 @@ const AdminOrders = () => {
 
               {/* Shipping Address */}
               <div className="bg-slate-700 rounded-lg p-4">
-                <h3 className="font-medium text-white mb-3">
+                <h3 className="text-sm font-semibold text-white mb-3">
                   Shipping Address
                 </h3>
                 <div className="flex items-start space-x-2">
-                  <MapPin className="h-4 w-4 text-slate-400 mt-1" />
-                  <div className="text-sm text-slate-300">
+                  <MapPin className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                  <div className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                     <p>{selectedOrder.shippingAddress?.address}</p>
                     <p>
                       {selectedOrder.shippingAddress?.city},{" "}
+                      {selectedOrder.shippingAddress?.state && `${selectedOrder.shippingAddress.state}, `}
                       {selectedOrder.shippingAddress?.postalCode}
                     </p>
                     <p>{selectedOrder.shippingAddress?.country}</p>
@@ -473,30 +565,30 @@ const AdminOrders = () => {
 
               {/* Order Items */}
               <div>
-                <h3 className="font-medium text-white mb-3">Order Items</h3>
+                <h3 className="text-sm font-semibold text-white mb-3">Order Items</h3>
                 <div className="space-y-3">
                   {selectedOrder.orderItems.map((item, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-between p-3 bg-slate-700 rounded-lg"
                     >
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-3 min-w-0">
                         <img
                           src={
                             item.image ||
                             `/placeholder.svg?height=50&width=50&query=${item.name}`
                           }
                           alt={item.name}
-                          className="w-12 h-12 object-cover rounded"
+                          className="w-12 h-12 object-cover rounded shrink-0 border border-slate-600"
                         />
-                        <div>
-                          <p className="font-medium text-white">{item.name}</p>
-                          <p className="text-sm text-slate-400">
+                        <div className="min-w-0">
+                          <p className="text-xs sm:text-sm font-medium text-white truncate">{item.name}</p>
+                          <p className="text-[10px] sm:text-xs text-slate-400">
                             Qty: {item.quantity}
                           </p>
                         </div>
                       </div>
-                      <p className="font-medium text-white">
+                      <p className="text-xs sm:text-sm font-medium text-white shrink-0 ml-2">
                         ₹{(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
@@ -506,22 +598,22 @@ const AdminOrders = () => {
 
               {/* Order Summary */}
               <div className="bg-slate-700 rounded-lg p-4">
-                <h3 className="font-medium text-white mb-3">Order Summary</h3>
+                <h3 className="text-sm font-semibold text-white mb-3">Order Summary</h3>
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between text-xs sm:text-sm">
                     <span className="text-slate-400">Subtotal:</span>
                     <span className="text-slate-300">
                       ₹{selectedOrder.itemsPrice?.toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between text-xs sm:text-sm">
                     <span className="text-slate-400">Shipping:</span>
                     <span className="text-slate-300">
                       ₹{selectedOrder.shippingPrice?.toFixed(2)}
                     </span>
                   </div>
                   <div className="border-t border-slate-600 pt-2">
-                    <div className="flex justify-between font-medium">
+                    <div className="flex justify-between font-semibold text-xs sm:text-sm">
                       <span className="text-white">Total:</span>
                       <span className="text-white">
                         ₹{selectedOrder.totalPrice.toFixed(2)}
@@ -533,8 +625,8 @@ const AdminOrders = () => {
 
               {/* Status Update */}
               <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
-                <h3 className="font-medium text-white mb-3">Update Status</h3>
-                <div className="flex items-center space-x-4">
+                <h3 className="text-sm font-semibold text-white mb-3">Update Status</h3>
+                <div className="flex flex-wrap items-center gap-3">
                   <select
                     value={selectedOrder.status}
                     onChange={(e) => {
@@ -555,7 +647,7 @@ const AdminOrders = () => {
                         });
                       }
                     }}
-                    className="px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3.5 py-2 bg-slate-700 border border-slate-600 rounded-lg text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                     disabled={updateOrderStatusMutation.isLoading || selectedOrder.status === "Delivered" || selectedOrder.status === "Cancelled"}
                   >
                     <option value="Pending">Pending</option>
@@ -565,7 +657,7 @@ const AdminOrders = () => {
                     <option value="Cancelled">Cancelled</option>
                   </select>
                   <span
-                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
                       selectedOrder.status
                     )}`}
                   >

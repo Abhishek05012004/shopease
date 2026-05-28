@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useMutation } from "react-query";
-import { CreditCard, Truck, Shield } from "lucide-react";
+import { CreditCard, Truck, Shield, User, Mail, MapPin, Phone, Landmark, Wallet, CheckCircle, AlertCircle, Package } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { ordersAPI } from "../services/api";
@@ -12,18 +12,26 @@ import toast from "react-hot-toast";
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialStep = queryParams.get("step") ? parseInt(queryParams.get("step")) : 1;
   const { items, getCartTotal, clearCart } = useCart();
   const { user } = useAuth();
 
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(initialStep);
+
+  useEffect(() => {
+    navigate(`/checkout?step=${step}`, { replace: true });
+  }, [step, navigate]);
   const [formData, setFormData] = useState({
     email: user?.email || "",
     // Shipping Address
     fullName: user?.name || "",
     address: user?.address?.street || "",
     city: user?.address?.city || "",
+    state: user?.address?.state || "",
     postalCode: user?.address?.zipCode || "",
-    country: user?.address?.country || "India",
+    country: "India",
     phone: user?.phone || "",
     // Payment
     paymentMethod: "Demo",
@@ -155,6 +163,7 @@ const Checkout = () => {
         fullName: formData.fullName,
         address: formData.address,
         city: formData.city,
+        state: formData.state,
         postalCode: formData.postalCode,
         country: formData.country,
         phone: formData.phone,
@@ -181,15 +190,15 @@ const Checkout = () => {
       <div className="min-h-screen bg-slate-800 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <h2 className="text-lg sm:text-xl font-bold text-white mb-4">
               Your cart is empty
             </h2>
-            <p className="text-gray-300 mb-8">
+            <p className="text-slate-300 mb-8 text-sm">
               Add some items to your cart before checking out.
             </p>
             <button
               onClick={() => navigate("/products")}
-              className="bg-yellow-500 hover:bg-yellow-600 text-slate-800 font-semibold px-6 py-3 rounded-lg transition-colors"
+              className="bg-yellow-500 hover:bg-yellow-600 text-slate-800 font-semibold px-4 py-2 text-sm rounded-lg transition-colors"
             >
               Continue Shopping
             </button>
@@ -202,11 +211,11 @@ const Checkout = () => {
   return (
     <div className="min-h-screen bg-slate-800 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-white mb-8">Checkout</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-white mb-6">Checkout</h1>
 
         {/* Progress Steps */}
         <div className="mb-8">
-          <div className="flex items-center justify-center space-x-8">
+          <div className="flex items-center justify-center flex-wrap gap-3 sm:gap-6">
             {[
               { number: 1, title: "Shipping", icon: Truck },
               { number: 2, title: "Review", icon: Shield },
@@ -214,16 +223,16 @@ const Checkout = () => {
             ].map((stepItem) => (
               <div key={stepItem.number} className="flex items-center">
                 <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                  className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
                     step >= stepItem.number
-                      ? "bg-yellow-500 border-yellow-500 text-slate-800"
+                      ? "bg-yellow-500 border-yellow-500 text-slate-800 font-bold"
                       : "border-gray-500 text-gray-400"
                   }`}
                 >
-                  <stepItem.icon className="h-5 w-5" />
+                  <stepItem.icon className="h-4 w-4" />
                 </div>
                 <span
-                  className={`ml-2 font-medium ${
+                  className={`ml-2 text-xs sm:text-sm font-semibold ${
                     step >= stepItem.number
                       ? "text-yellow-500"
                       : "text-gray-400"
@@ -243,12 +252,12 @@ const Checkout = () => {
               {/* Step 1: Shipping Address */}
               {step === 1 && (
                 <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
-                  <h2 className="text-xl font-semibold mb-6 text-white">
+                  <h2 className="text-base sm:text-lg font-semibold mb-4 text-white">
                     Shipping Address
                   </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5">
                         Email <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -257,11 +266,11 @@ const Checkout = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                        className="w-full px-4 py-2.5 bg-slate-600 border border-slate-500 rounded-lg text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5">
                         Full Name <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -270,11 +279,11 @@ const Checkout = () => {
                         value={formData.fullName}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                        className="w-full px-4 py-2.5 bg-slate-600 border border-slate-500 rounded-lg text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5">
                         Address <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -283,11 +292,11 @@ const Checkout = () => {
                         value={formData.address}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                        className="w-full px-4 py-2.5 bg-slate-600 border border-slate-500 rounded-lg text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5">
                         City <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -296,11 +305,25 @@ const Checkout = () => {
                         value={formData.city}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                        className="w-full px-4 py-2.5 bg-slate-600 border border-slate-500 rounded-lg text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5">
+                        State <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="State (e.g. Maharashtra)"
+                        className="w-full px-4 py-2.5 bg-slate-600 border border-slate-500 rounded-lg text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5">
                         Postal Code <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -309,29 +332,12 @@ const Checkout = () => {
                         value={formData.postalCode}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                        placeholder="6-digit postal code"
+                        className="w-full px-4 py-2.5 bg-slate-600 border border-slate-500 rounded-lg text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Country <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-4 py-3 bg-slate-600 border border-slate-500 rounded-lg text-white focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                      >
-                        <option value="India">India</option>
-                        <option value="United States">United States</option>
-                        <option value="Canada">Canada</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="Australia">Australia</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5">
                         Phone Number <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -340,7 +346,8 @@ const Checkout = () => {
                         value={formData.phone}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                        placeholder="10-digit mobile number"
+                        className="w-full px-4 py-2.5 bg-slate-600 border border-slate-500 rounded-lg text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -348,20 +355,51 @@ const Checkout = () => {
                     <button
                       type="button"
                       onClick={() => {
+                        const emailTrimmed = (formData.email || "").trim();
+                        const fullNameTrimmed = (formData.fullName || "").trim();
+                        const addressTrimmed = (formData.address || "").trim();
+                        const cityTrimmed = (formData.city || "").trim();
+                        const stateTrimmed = (formData.state || "").trim();
+                        const postalCodeTrimmed = (formData.postalCode || "").trim();
+                        const phoneTrimmed = (formData.phone || "").trim();
+
                         if (
-                          !formData.email ||
-                          !formData.fullName ||
-                          !formData.address ||
-                          !formData.city ||
-                          !formData.postalCode ||
-                          !formData.phone
+                          !emailTrimmed ||
+                          !fullNameTrimmed ||
+                          !addressTrimmed ||
+                          !cityTrimmed ||
+                          !stateTrimmed ||
+                          !postalCodeTrimmed ||
+                          !phoneTrimmed
                         ) {
                           toast.error("Please fill in all required fields.");
                           return;
                         }
+
+                        // Email format validation
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(emailTrimmed)) {
+                          toast.error("Please enter a valid email address.");
+                          return;
+                        }
+
+                        // Phone number validation: exactly 10 digits
+                        const phoneRegex = /^\d{10}$/;
+                        if (!phoneRegex.test(phoneTrimmed)) {
+                          toast.error("Phone number must be exactly 10 digits.");
+                          return;
+                        }
+
+                        // Postal code validation: exactly 6 digits
+                        const postalCodeRegex = /^\d{6}$/;
+                        if (!postalCodeRegex.test(postalCodeTrimmed)) {
+                          toast.error("Postal code must be exactly 6 digits (numbers only).");
+                          return;
+                        }
+
                         setStep(2);
                       }}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-slate-800 font-semibold px-6 py-3 rounded-lg transition-colors"
+                      className="bg-yellow-500 hover:bg-yellow-600 text-slate-800 font-semibold px-4 py-2 text-sm rounded-lg transition-colors"
                     >
                       Continue to Review
                     </button>
@@ -371,103 +409,124 @@ const Checkout = () => {
 
               {/* Step 2: Order Review */}
               {step === 2 && (
-                <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
-                  <h2 className="text-xl font-semibold mb-6 text-white">
-                    Review Your Order
-                  </h2>
+                <div className="bg-slate-700 rounded-xl shadow-md border border-slate-600 p-6 space-y-6">
+                  <div>
+                    <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                      <Shield className="h-5 w-5 text-yellow-500" />
+                      Review Your Order
+                    </h2>
+                    <p className="text-gray-300 text-xs mt-1">Please inspect your shipping details and items before proceeding.</p>
+                  </div>
 
-                  {/* Shipping Summary */}
-                  <div className="mb-8 border-b border-slate-600 pb-6">
-                    <h3 className="text-lg font-medium text-yellow-500 mb-3">
+                  {/* Shipping Info Card */}
+                  <div className="bg-slate-800/60 rounded-lg p-5 border border-slate-600/80 space-y-4">
+                    <h3 className="text-xs sm:text-sm font-semibold text-yellow-500 flex items-center gap-2 pb-2 border-b border-slate-700">
+                      <MapPin className="h-4.5 w-4.5" />
                       Shipping Information
                     </h3>
-                    <div className="text-slate-300 space-y-1">
-                      <p>
-                        <span className="font-semibold text-white">Name:</span>{" "}
-                        {formData.fullName}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-white">Email:</span>{" "}
-                        {formData.email}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-white">Address:</span>{" "}
-                        {formData.address}, {formData.city}, {formData.postalCode},{" "}
-                        {formData.country}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-white">Phone:</span>{" "}
-                        {formData.phone}
-                      </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-200">
+                      <div className="flex items-start gap-3">
+                        <User className="h-5 w-5 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                          <span className="block text-xs text-gray-400 font-medium uppercase tracking-wider">Recipient Name</span>
+                          <span className="font-semibold text-white">{formData.fullName}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Mail className="h-5 w-5 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                          <span className="block text-xs text-gray-400 font-medium uppercase tracking-wider">Email Address</span>
+                          <span className="text-white">{formData.email}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-5 w-5 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                          <span className="block text-xs text-gray-400 font-medium uppercase tracking-wider">Address</span>
+                          <span className="text-white">
+                            {formData.address}, {formData.city}, {formData.state}, {formData.postalCode}, {formData.country}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Phone className="h-5 w-5 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                          <span className="block text-xs text-gray-400 font-medium uppercase tracking-wider">Phone Number</span>
+                          <span className="text-white font-mono">{formData.phone}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   {/* Products ordered summary */}
-                  <div className="space-y-4 mb-6">
-                    <h3 className="text-lg font-medium text-yellow-500">
-                      Products Ordered
+                  <div className="space-y-4">
+                    <h3 className="text-xs sm:text-sm font-semibold text-yellow-500 flex items-center gap-2">
+                      <Package className="h-4.5 w-4.5" />
+                      Products Ordered ({items.length})
                     </h3>
-                    {items.map((item) => {
-                      const productObj =
-                        typeof item.product === "object" ? item.product : null;
-                      const name = item.name || productObj?.name || "Product";
-                      const price =
-                        typeof item.price === "number"
-                          ? item.price
-                          : productObj?.price ?? 0;
-                      const imageSrc =
-                        productObj?.images?.[0]?.url ||
-                        item.images?.[0]?.url ||
-                        productObj?.image ||
-                        item.image ||
-                        `/placeholder.svg?height=60&width=60&query=${encodeURIComponent(
-                          name
-                        )}`;
+                    <div className="bg-slate-800/30 rounded-lg border border-slate-600/60 divide-y divide-slate-600/40">
+                      {items.map((item) => {
+                        const productObj =
+                          typeof item.product === "object" ? item.product : null;
+                        const name = item.name || productObj?.name || "Product";
+                        const price =
+                          typeof item.price === "number"
+                            ? item.price
+                            : productObj?.price ?? 0;
+                        const imageSrc =
+                          productObj?.images?.[0]?.url ||
+                          item.images?.[0]?.url ||
+                          productObj?.image ||
+                          item.image ||
+                          `/placeholder.svg?height=60&width=60&query=${encodeURIComponent(
+                            name
+                          )}`;
 
-                      return (
-                        <div key={item._id} className="flex items-center gap-4">
-                          {/* Col 1: Thumbnail (fixed width) */}
-                          <div className="w-16 shrink-0">
-                            <img
-                              src={imageSrc || "/placeholder.svg"}
-                              alt={name}
-                              className="w-16 h-16 object-cover rounded"
-                            />
-                          </div>
+                        return (
+                          <div key={item._id} className="flex items-center gap-4 p-4 hover:bg-slate-800/50 transition-colors">
+                            {/* Thumbnail */}
+                            <div className="w-14 h-14 shrink-0 bg-slate-700 rounded overflow-hidden border border-slate-600">
+                              <img
+                                src={imageSrc || "/placeholder.svg"}
+                                alt={name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
 
-                          {/* Col 2: Info (flex-grow) */}
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-white truncate">
-                              {name}
-                            </h4>
-                            <p className="text-gray-300">
-                              Qty: {item.quantity}
-                            </p>
-                          </div>
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-white text-sm sm:text-base break-normal leading-tight">
+                                {name}
+                              </h4>
+                              <p className="text-gray-300 text-xs sm:text-sm mt-0.5">
+                                Qty: <span className="font-semibold text-yellow-500">{item.quantity}</span> @ ₹{price.toFixed(2)} each
+                              </p>
+                            </div>
 
-                          {/* Col 3: Line total (fixed, right-aligned) */}
-                          <div className="w-28 text-right">
-                            <p className="font-semibold text-yellow-500">
-                              ₹{(price * item.quantity).toFixed(2)}
-                            </p>
+                            {/* Line total */}
+                            <div className="text-right">
+                              <p className="font-semibold text-yellow-500 text-sm sm:text-base">
+                                ₹{(price * item.quantity).toFixed(2)}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
 
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-4 pt-4 border-t border-slate-600">
                     <button
                       type="button"
                       onClick={() => setStep(1)}
-                      className="bg-slate-600 hover:bg-slate-500 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+                      className="bg-slate-600 hover:bg-slate-500 text-white font-semibold px-4 py-2 text-sm rounded-lg transition-colors"
                     >
                       Back to Shipping
                     </button>
                     <button
                       type="button"
                       onClick={() => setStep(3)}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-slate-800 font-semibold px-6 py-3 rounded-lg transition-colors"
+                      className="bg-yellow-500 hover:bg-yellow-600 text-slate-800 font-semibold px-4 py-2 text-sm rounded-lg transition-colors flex items-center gap-1.5"
                     >
                       Proceed to Payment
                     </button>
@@ -477,54 +536,76 @@ const Checkout = () => {
 
               {/* Step 3: Payment Method */}
               {step === 3 && (
-                <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6">
-                  <h2 className="text-xl font-semibold mb-6 text-white">
-                    Payment Method
-                  </h2>
-
-                  <div className="space-y-4 mb-6">
-                    {["Demo", "Cashfree", "Cash on Delivery"].map((method) => (
-                      <label key={method} className="flex items-center">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value={method}
-                          checked={formData.paymentMethod === method}
-                          onChange={handleInputChange}
-                          className="text-yellow-500 focus:ring-yellow-500 bg-slate-600 border-slate-500"
-                        />
-                        <span className="ml-2 font-medium text-white">
-                          {method}
-                        </span>
-                      </label>
-                    ))}
+                <div className="bg-slate-700 rounded-xl shadow-md border border-slate-600 p-6 space-y-6">
+                  <div>
+                    <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                      <CreditCard className="h-5 w-5 text-yellow-500" />
+                      Select Payment Method
+                    </h2>
+                    <p className="text-gray-300 text-xs mt-1">Select one of our secure local checkout interfaces.</p>
                   </div>
 
-                  {formData.paymentMethod === "Demo" && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Demo Result <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                          name="demoResult"
-                          value={formData.demoResult}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 bg-slate-600 border border-slate-500 rounded-lg text-white focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  {/* Payment Select Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[
+                      { id: "Demo", title: "Demo Payment", desc: "Simulate checkout success or failure", icon: CreditCard },
+                      { id: "Cashfree", title: "Cashfree", desc: "Pay securely via cards/UPI/Netbanking", icon: Landmark },
+                      { id: "Cash on Delivery", title: "Cash on Delivery", desc: "Pay cash upon arrival of product", icon: Wallet },
+                    ].map((method) => {
+                      const IconComponent = method.icon;
+                      const isSelected = formData.paymentMethod === method.id;
+                      return (
+                        <div
+                          key={method.id}
+                          onClick={() => setFormData({ ...formData, paymentMethod: method.id })}
+                          className={`relative cursor-pointer rounded-xl p-4 border-2 transition-all flex flex-col justify-between space-y-3 ${
+                            isSelected
+                              ? "bg-slate-800 border-yellow-500 ring-1 ring-yellow-500"
+                              : "bg-slate-800/40 border-slate-600 hover:border-slate-500 hover:bg-slate-800/60"
+                          }`}
                         >
-                          <option value="success">Success</option>
-                          <option value="fail">Fail</option>
-                        </select>
-                      </div>
+                          <div className="flex justify-between items-start">
+                            <IconComponent className={`h-6 w-6 ${isSelected ? "text-yellow-500" : "text-gray-400"}`} />
+                            <div className={`h-4.5 w-4.5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                              isSelected ? "border-yellow-500 bg-yellow-500" : "border-slate-500"
+                            }`}>
+                              {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-slate-800" />}
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-white text-sm">{method.title}</h4>
+                            <p className="text-[10px] text-gray-400 mt-1 leading-tight">{method.desc}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Demo Options Config inside card */}
+                  {formData.paymentMethod === "Demo" && (
+                    <div className="bg-slate-800/50 p-5 rounded-lg border border-slate-600 space-y-2.5">
+                      <label className="text-xs sm:text-sm font-semibold text-white flex items-center gap-1.5">
+                        <AlertCircle className="h-4 w-4 text-yellow-500" />
+                        Configure Demo Outcome
+                      </label>
+                      <select
+                        name="demoResult"
+                        value={formData.demoResult}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-yellow-500 focus:border-transparent font-medium"
+                      >
+                        <option value="success">Success Scenario</option>
+                        <option value="fail">Fail Scenario</option>
+                      </select>
                     </div>
                   )}
 
-                  {/* Payment Summary section */}
-                  <div className="mt-8 pt-6 border-t border-slate-600 mb-6">
-                    <h3 className="text-lg font-medium text-yellow-500 mb-4">
+                  {/* Summary Section */}
+                  <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-600/60 space-y-4">
+                    <h3 className="text-xs sm:text-sm font-semibold text-yellow-500 pb-2 border-b border-slate-700">
                       Payment Summary
                     </h3>
-                    <div className="bg-slate-800/50 p-4 rounded-lg space-y-2 text-sm text-slate-300">
+                    <div className="space-y-3 text-xs sm:text-sm text-slate-300">
                       {items.map((item) => {
                         const productObj =
                           typeof item.product === "object" ? item.product : null;
@@ -534,35 +615,33 @@ const Checkout = () => {
                             ? item.price
                             : productObj?.price ?? 0;
                         return (
-                          <div key={item._id} className="flex justify-between">
-                            <span>{name} x {item.quantity}</span>
-                            <span>₹{(price * item.quantity).toFixed(2)}</span>
+                          <div key={item._id} className="flex justify-between items-center gap-4">
+                            <span className="truncate flex-1">{name} <span className="text-gray-400 font-mono">x {item.quantity}</span></span>
+                            <span className="font-medium text-white shrink-0">₹{(price * item.quantity).toFixed(2)}</span>
                           </div>
                         );
                       })}
-                      <div className="border-t border-slate-600 pt-2 mt-2 flex justify-between font-semibold text-white">
+                      <div className="border-t border-slate-700 pt-3 mt-3 flex justify-between items-center text-base sm:text-lg font-bold text-white">
                         <span>Total to Pay</span>
                         <span className="text-yellow-500">₹{total.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-4 pt-4 border-t border-slate-600">
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="bg-slate-600 hover:bg-slate-500 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+                      className="bg-slate-600 hover:bg-slate-500 text-white font-semibold px-4 py-2 text-sm rounded-lg transition-colors"
                     >
                       Back to Review
                     </button>
                     <button
                       type="submit"
                       disabled={createOrderMutation.isLoading}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-slate-800 font-semibold px-6 py-3 rounded-lg transition-colors disabled:opacity-50"
+                      className="bg-yellow-500 hover:bg-yellow-600 text-slate-800 font-semibold px-4 py-2 text-sm rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
                     >
-                      {createOrderMutation.isLoading
-                        ? "Processing..."
-                        : "Pay & Place Order"}
+                      {createOrderMutation.isLoading ? "Processing..." : "Pay & Place Order"}
                     </button>
                   </div>
                 </div>
@@ -573,11 +652,11 @@ const Checkout = () => {
           {/* Order Summary sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6 sticky top-[140px] h-fit">
-              <h2 className="text-xl font-semibold mb-6 text-white">
+              <h2 className="text-base sm:text-lg font-semibold mb-4 text-white">
                 Order Summary
               </h2>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-3 mb-6 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-300">Subtotal</span>
                   <span className="font-medium text-white">
@@ -590,15 +669,15 @@ const Checkout = () => {
                     {shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}
                   </span>
                 </div>
-                <div className="border-t border-slate-600 pt-4">
-                  <div className="flex justify-between text-lg font-semibold">
+                <div className="border-t border-slate-600 pt-3">
+                  <div className="flex justify-between text-base sm:text-lg font-semibold">
                     <span className="text-white">Total</span>
                     <span className="text-yellow-500">₹{total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-4 text-sm text-gray-300">
+              <div className="space-y-3 text-xs sm:text-sm text-gray-300">
                 <div className="flex items-center space-x-2">
                   <Shield className="h-4 w-4" />
                   <span>Secure checkout</span>

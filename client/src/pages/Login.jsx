@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const Login = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [searchParams] = useSearchParams();
 
   const { login, loading, isAuthenticated } = useAuth();
@@ -42,8 +44,25 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const emailTrimmed = (formData.email || "").trim();
+    if (!emailTrimmed) {
+      toast.error("Email is required.");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailTrimmed)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    if (!formData.password) {
+      toast.error("Password is required.");
+      return;
+    }
+
     try {
-      await login(formData.email, formData.password);
+      await login(emailTrimmed, formData.password, rememberMe);
       navigate(redirect);
     } catch (error) {
       // Error is handled by the auth context
@@ -89,15 +108,15 @@ const Login = () => {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center bg-gray-50 p-8">
+      <div className="flex-1 flex items-center justify-center bg-gray-50 p-4 sm:p-8">
         <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
             <div className="text-center mb-8">
               <div className="lg:hidden w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Store className="h-8 w-8 text-white" />
               </div>
               <h2
-                className="text-3xl font-bold text-gray-900 mb-2"
+                className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
                 Sign in to your account
@@ -171,29 +190,31 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center">
                   <input
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                     className="filter-checkbox"
                   />
                   <label
                     htmlFor="remember-me"
-                    className="ml-3 text-sm font-medium text-gray-700"
+                    className="ml-2 text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap"
                   >
                     Remember me
                   </label>
                 </div>
 
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-blue-600 hover:text-blue-500 transition-colors"
+                <div className="text-xs sm:text-sm">
+                  <Link
+                    to="/forgot-password"
+                    className="font-semibold text-blue-600 hover:text-blue-500 transition-colors whitespace-nowrap"
                   >
-                    Forgot your password?
-                  </a>
+                    Forgot password?
+                  </Link>
                 </div>
               </div>
 

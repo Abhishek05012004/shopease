@@ -26,6 +26,7 @@ const Auth = ({ defaultForm = "login" }) => {
   const [error, setError] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   const { login, register } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -80,7 +81,7 @@ const Auth = ({ defaultForm = "login" }) => {
 
     try {
       if (isLogin) {
-        await login(formData.email, formData.password);
+        await login(formData.email, formData.password, rememberMe);
       } else {
         if (!isOtpSent) {
           setError("Please verify your email with OTP first");
@@ -442,6 +443,8 @@ const Auth = ({ defaultForm = "login" }) => {
                   <label className="flex items-center">
                     <input
                       type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
                       className="rounded border-slate-500 text-yellow-400 focus:ring-yellow-400 bg-slate-600"
                     />
                     <span className="ml-2 text-sm text-slate-300">

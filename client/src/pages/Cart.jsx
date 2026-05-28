@@ -92,10 +92,10 @@ const Cart = () => {
     <div className="min-h-screen bg-slate-800 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-white">Shopping Cart</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Shopping Cart</h1>
           {!isAuthenticated && (
-            <div className="bg-slate-700 border border-yellow-500 rounded-lg px-4 py-2">
-              <p className="text-yellow-400 text-sm font-medium">
+            <div className="bg-slate-700 border border-yellow-500 rounded-lg px-3 py-1.5">
+              <p className="text-yellow-400 text-xs sm:text-sm font-medium">
                 <Link
                   to="/login?redirect=/cart"
                   className="hover:text-yellow-300"
@@ -114,12 +114,12 @@ const Cart = () => {
             <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     Cart Items ({items.length})
                   </h2>
                   <button
                     onClick={clearCart}
-                    className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
+                    className="text-red-400 hover:text-red-300 text-xs sm:text-sm font-medium transition-colors"
                   >
                     Clear Cart
                   </button>
@@ -157,37 +157,38 @@ const Cart = () => {
                       <div
                         key={item._id}
                         id={`cart-item-${productId}`}
-                        className="flex items-center gap-4 pb-6 border-b border-slate-600 last:border-b-0 transition-all duration-500 rounded-xl px-2"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-600 last:border-b-0 transition-all duration-500 rounded-xl px-2"
                       >
-                        {/* Col 1: Image (fixed width) */}
-                        <Link
-                          to={`/products/${productId}`}
-                          className="w-20 shrink-0"
-                        >
-                          <img
-                            src={imageSrc || "/placeholder.svg"}
-                            alt={name}
-                            className="w-20 h-20 object-cover rounded-lg"
-                          />
-                        </Link>
-
-                        {/* Col 2: Info (flexes to fill) */}
-                        <div className="flex-1 min-w-0">
-                          <Link to={`/products/${productId}`}>
-                            <h3 className="text-lg font-medium text-white hover:text-yellow-400 transition-colors truncate">
-                              {name}
-                            </h3>
+                        {/* Left Group: Image & Product Info */}
+                        <div className="flex items-center gap-4 flex-1 min-w-0 w-full">
+                          <Link
+                            to={`/products/${productId}`}
+                            className="w-16 sm:w-20 shrink-0"
+                          >
+                            <img
+                              src={imageSrc || "/placeholder.svg"}
+                              alt={name}
+                              className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg"
+                            />
                           </Link>
-                          <p className="text-slate-300 text-sm mt-1 truncate">
-                            {category}
-                          </p>
-                          <p className="text-yellow-400 font-semibold mt-2">
-                            ₹{price}
-                          </p>
+                          <div className="flex-1 min-w-0">
+                            <Link to={`/products/${productId}`}>
+                              <h3 className="text-sm sm:text-base font-medium text-white hover:text-yellow-400 transition-colors break-normal leading-tight">
+                                {name}
+                              </h3>
+                            </Link>
+                            <p className="text-slate-300 text-xs sm:text-sm mt-1 truncate">
+                              {category}
+                            </p>
+                            <p className="text-yellow-400 font-semibold mt-1.5 text-sm sm:text-base">
+                              ₹{price}
+                            </p>
+                          </div>
                         </div>
 
-                        {/* Col 3: Quantity Controls (fixed width) */}
-                        <div className="w-36 flex items-center justify-center">
+                        {/* Right Group: Controls, Price & Delete */}
+                        <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto shrink-0 border-t border-slate-600/30 pt-4 sm:border-t-0 sm:pt-0">
+                          {/* Quantity Controls */}
                           <div className="flex items-center border border-slate-500 rounded-lg bg-slate-600">
                             <button
                               onClick={() =>
@@ -196,44 +197,43 @@ const Cart = () => {
                               }
                               disabled={item.quantity === 1}
                               aria-disabled={item.quantity === 1}
-                              className={`p-2 transition-colors ${item.quantity === 1
+                              className={`p-1.5 transition-colors ${
+                                item.quantity === 1
                                   ? "text-slate-500 cursor-not-allowed"
                                   : "text-slate-300 hover:text-white hover:bg-slate-500"
-                                }`}
+                              }`}
                             >
-                              <Minus className="h-4 w-4" />
+                              <Minus className="h-3.5 w-3.5" />
                             </button>
-                            <span className="px-4 py-2 font-medium text-white">
+                            <span className="px-3 py-1 font-medium text-white text-sm">
                               {item.quantity}
                             </span>
                             <button
                               onClick={() =>
                                 updateQuantity(productId, item.quantity + 1)
                               }
-                              className="p-2 text-slate-300 hover:text-white hover:bg-slate-500 transition-colors"
+                              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-500 transition-colors"
                             >
-                              <Plus className="h-4 w-4" />
+                              <Plus className="h-3.5 w-3.5" />
                             </button>
                           </div>
-                        </div>
 
-                        {/* Col 4: Delete (fixed width) */}
-                        <div className="w-12 flex items-center justify-center">
-                          <button
-                            onClick={() => removeFromCart(productId)}
-                            className="p-2 text-red-400 hover:text-red-300 transition-colors"
-                            aria-label="Remove item"
-                            title="Remove item"
-                          >
-                            <Trash2 className="h-5 w-5" />
-                          </button>
-                        </div>
-
-                        {/* Col 5: Line total (fixed width, right-aligned) */}
-                        <div className="w-28 text-right">
-                          <p className="text-lg font-semibold text-white">
-                            ₹{(price * item.quantity).toFixed(2)}
-                          </p>
+                          {/* Line total & Delete actions */}
+                          <div className="flex items-center gap-4">
+                            <div className="text-right min-w-[70px]">
+                              <p className="text-sm sm:text-base font-semibold text-white">
+                                ₹{(price * item.quantity).toFixed(2)}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => removeFromCart(productId)}
+                              className="p-1.5 text-red-400 hover:text-red-300 transition-colors"
+                              aria-label="Remove item"
+                              title="Remove item"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     );
@@ -246,11 +246,11 @@ const Cart = () => {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-slate-700 rounded-lg shadow-sm border border-slate-600 p-6 sticky top-[140px] h-fit">
-              <h2 className="text-xl font-semibold text-white mb-6">
+              <h2 className="text-base sm:text-lg font-semibold text-white mb-4">
                 Order Summary
               </h2>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-3 mb-6 text-sm">
                 <div className="flex justify-between">
                   <span className="text-slate-300">Subtotal</span>
                   <span className="font-medium text-white">
@@ -264,23 +264,23 @@ const Cart = () => {
                   </span>
                 </div>
                 {shipping > 0 && (
-                  <p className="text-sm text-slate-400">
+                  <p className="text-xs text-slate-400">
                     Add ₹{(500 - subtotal).toFixed(2)} more for free shipping
                   </p>
                 )}
-                <div className="border-t border-slate-600 pt-4">
-                  <div className="flex justify-between text-lg font-semibold">
+                <div className="border-t border-slate-600 pt-3">
+                  <div className="flex justify-between text-base sm:text-lg font-semibold">
                     <span className="text-white">Total</span>
                     <span className="text-white">₹{total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {isAuthenticated ? (
                   <Link
                     to="/checkout"
-                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-semibold py-3 px-4 rounded-lg transition-colors text-center block"
+                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-semibold py-2 px-3 rounded-lg text-sm transition-colors text-center block"
                   >
                     Proceed to Checkout
                   </Link>
@@ -288,11 +288,11 @@ const Cart = () => {
                   <div className="space-y-2">
                     <Link
                       to="/login?redirect=/checkout"
-                      className="w-full bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-semibold py-3 px-4 rounded-lg transition-colors text-center block"
+                      className="w-full bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-semibold py-2 px-3 rounded-lg text-sm transition-colors text-center block"
                     >
                       Login to Checkout
                     </Link>
-                    <p className="text-sm text-slate-300 text-center">
+                    <p className="text-xs text-slate-300 text-center">
                       New customer?{" "}
                       <Link
                         to="/register?redirect=/checkout"
@@ -305,7 +305,7 @@ const Cart = () => {
                 )}
                 <Link
                   to="/products"
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors text-center block"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-3 rounded-lg text-sm transition-colors text-center block"
                 >
                   Continue Shopping
                 </Link>

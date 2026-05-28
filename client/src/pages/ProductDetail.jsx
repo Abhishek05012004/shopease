@@ -117,16 +117,21 @@ const ProductDetail = () => {
         ];
 
   const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`h-5 w-5 ${
-          i < Math.floor(rating)
-            ? "text-yellow-400 fill-current"
-            : "text-slate-400"
-        }`}
-      />
-    ));
+    return Array.from({ length: 5 }, (_, i) => {
+      const fillPercentage = Math.max(0, Math.min(100, (rating - i) * 100));
+
+      return (
+        <div key={i} className="relative">
+          <Star className="h-4 w-4 text-slate-500" />
+          <div
+            className="absolute inset-0 overflow-hidden"
+            style={{ width: `${fillPercentage}%` }}
+          >
+            <Star className="h-4 w-4 text-yellow-400 fill-current" />
+          </div>
+        </div>
+      );
+    });
   };
 
   return (
@@ -191,12 +196,12 @@ const ProductDetail = () => {
 
           {/* Product Info */}
           <div>
-            <h1 className="text-3xl font-bold text-white mb-4">
+            <h1 className="text-xl sm:text-2xl font-bold text-white mb-3">
               {productData.name}
             </h1>
 
             {/* Rating */}
-            <div className="flex items-center space-x-2 mb-4">
+            <div className="flex items-center space-x-2 mb-4 text-xs sm:text-sm">
               <div className="flex items-center">
                 {renderStars(productData.rating)}
               </div>
@@ -206,12 +211,12 @@ const ProductDetail = () => {
             </div>
 
             {/* Price */}
-            <div className="flex items-center space-x-4 mb-6">
-              <span className="text-3xl font-bold text-yellow-400">
+            <div className="flex items-center space-x-4 mb-5">
+              <span className="text-2xl font-bold text-yellow-400">
                 ₹{productData.price}
               </span>
               {productData.originalPrice > productData.price && (
-                <span className="text-xl text-slate-400 line-through">
+                <span className="text-base text-slate-400 line-through">
                   ₹{productData.originalPrice}
                 </span>
               )}
@@ -220,11 +225,19 @@ const ProductDetail = () => {
             {/* Stock Status */}
             <div className="mb-6">
               {productData.stock > 0 ? (
-                <span className="text-emerald-400 font-medium">
-                  In Stock ({productData.stock} available)
-                </span>
+                productData.stock < 10 ? (
+                  <span className="text-orange-400 font-medium bg-orange-950/30 border border-orange-500/30 px-3 py-1.5 rounded-lg">
+                    Only {productData.stock} left in stock - order soon!
+                  </span>
+                ) : (
+                  <span className="text-emerald-400 font-medium bg-emerald-950/30 border border-emerald-500/30 px-3 py-1.5 rounded-lg">
+                    In Stock
+                  </span>
+                )
               ) : (
-                <span className="text-red-400 font-medium">Out of Stock</span>
+                <span className="text-red-400 font-medium bg-red-950/30 border border-red-500/30 px-3 py-1.5 rounded-lg">
+                  Out of Stock
+                </span>
               )}
             </div>
 
@@ -266,16 +279,16 @@ const ProductDetail = () => {
               {isAuthenticated && isInCart(productData._id) ? (
                 <button
                   onClick={() => navigate(`/cart#cart-item-${productData._id}`)}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors flex items-center justify-center"
                 >
-                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  <ShoppingCart className="h-4.5 w-4.5 mr-1.5" />
                   Go to Cart
                 </button>
               ) : (
                 <button
                   onClick={handleAddToCart}
                   disabled={productData.stock === 0}
-                  className={`flex-1 font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center ${
+                  className={`flex-1 font-semibold py-2 px-4 rounded-lg text-sm transition-colors flex items-center justify-center ${
                     productData.stock === 0
                       ? "bg-slate-600 text-slate-400 cursor-not-allowed"
                       : !isAuthenticated
@@ -283,20 +296,24 @@ const ProductDetail = () => {
                       : "bg-yellow-500 hover:bg-yellow-600 text-slate-900"
                   }`}
                 >
-                  {!isAuthenticated && <Lock className="h-5 w-5 mr-2" />}
+                  {!isAuthenticated ? (
+                    <Lock className="h-4.5 w-4.5 mr-1.5" />
+                  ) : (
+                    <ShoppingCart className="h-4.5 w-4.5 mr-1.5" />
+                  )}
                   {!isAuthenticated ? "Login to Add to Cart" : "Add to Cart"}
                 </button>
               )}
               <button
                 onClick={handleWishlistToggle}
-                className={`font-semibold py-3 px-6 rounded-lg border transition-colors flex items-center justify-center ${
+                className={`font-semibold py-2 px-4 rounded-lg text-sm border transition-colors flex items-center justify-center ${
                   isInWishlist(productData._id)
                     ? "bg-red-500 hover:bg-red-600 text-white border-red-500"
                     : "bg-slate-700 hover:bg-slate-600 text-white border-slate-600"
                 }`}
               >
                 <Heart
-                  className={`h-5 w-5 mr-2 ${
+                  className={`h-4.5 w-4.5 mr-1.5 ${
                     isInWishlist(productData._id) ? "fill-current" : ""
                   }`}
                 />
@@ -336,22 +353,22 @@ const ProductDetail = () => {
                 <span>Secure Payment</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-slate-300">
-                <RotateCcw className="h-5 w-5 text-yellow-400" />
-                <span>Easy Returns</span>
+                <Shield className="h-5 w-5 text-yellow-400" />
+                <span>All Sales Final</span>
               </div>
             </div>
 
             {/* Product Details - Premium Info Cards */}
             <div className="border-t border-slate-700 pt-6 mt-8">
-              <h3 className="font-semibold text-white mb-4 text-lg">Product Information</h3>
+              <h3 className="font-semibold text-white mb-4 text-base">Product Information</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-slate-700 bg-opacity-40 p-4 rounded-xl border border-slate-600 text-center">
-                  <span className="block text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">Brand</span>
-                  <span className="text-white font-semibold text-base">{productData.brand || "N/A"}</span>
+                  <span className="block text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Brand</span>
+                  <span className="text-white font-semibold text-sm">{productData.brand || "N/A"}</span>
                 </div>
                 <div className="bg-slate-700 bg-opacity-40 p-4 rounded-xl border border-slate-600 text-center">
-                  <span className="block text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">Category</span>
-                  <span className="text-white font-semibold text-base">{productData.category}</span>
+                  <span className="block text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Category</span>
+                  <span className="text-white font-semibold text-sm">{productData.category}</span>
                 </div>
               </div>
             </div>
@@ -361,12 +378,12 @@ const ProductDetail = () => {
         {/* Product Tabs */}
         <div className="mb-16">
           <div className="border-b border-slate-600">
-            <nav className="flex space-x-8">
+            <nav className="flex space-x-8 overflow-x-auto whitespace-nowrap pb-1 scrollbar-none">
               {["description", "specifications", "reviews"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition-colors ${
+                  className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition-colors shrink-0 ${
                     activeTab === tab
                       ? "border-yellow-500 text-yellow-400"
                       : "border-transparent text-slate-400 hover:text-slate-300 hover:border-slate-500"
@@ -380,34 +397,48 @@ const ProductDetail = () => {
 
           <div className="py-8">
             {activeTab === "description" && (
-              <div className="prose max-w-none">
-                <p className="text-slate-300 leading-relaxed">
+              <div className="bg-slate-700 p-6 rounded-2xl border border-slate-600 shadow-lg">
+                <h4 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="w-1.5 h-5 bg-yellow-500 rounded-full inline-block"></span>
+                  Product Overview
+                </h4>
+                <p className="text-slate-200 leading-relaxed text-sm whitespace-pre-line">
                   {productData.description}
                 </p>
               </div>
             )}
 
             {activeTab === "specifications" && (
-              <div>
+              <div className="bg-slate-700 rounded-2xl border border-slate-600 shadow-lg overflow-hidden">
+                <div className="bg-slate-650 px-6 py-4 border-b border-slate-600">
+                  <h4 className="text-base font-bold text-white flex items-center gap-2">
+                    <span className="w-1.5 h-5 bg-yellow-500 rounded-full inline-block"></span>
+                    Product Specifications
+                  </h4>
+                </div>
                 {productData.specifications &&
                 Object.keys(productData.specifications).length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="divide-y divide-slate-600/80">
                     {Object.entries(productData.specifications).map(
-                      ([key, value]) => (
+                      ([key, value], idx) => (
                         <div
                           key={key}
-                          className="flex justify-between py-2 border-b border-slate-600"
+                          className={`grid grid-cols-3 px-6 py-4 text-sm transition-colors ${
+                            idx % 2 === 0 ? "bg-slate-700/30" : "bg-slate-800/10"
+                          } hover:bg-slate-600/30`}
                         >
-                          <span className="font-medium capitalize text-white">
-                            {key}:
+                          <span className="col-span-1 font-semibold text-slate-300 capitalize">
+                            {key.replace(/([A-Z])/g, ' $1').trim()}
                           </span>
-                          <span className="text-slate-300">{value}</span>
+                          <span className="col-span-2 text-white font-medium">{value}</span>
                         </div>
                       )
                     )}
                   </div>
                 ) : (
-                  <p className="text-slate-400">No specifications available.</p>
+                  <div className="p-6 text-center">
+                    <p className="text-slate-400">No specifications available.</p>
+                  </div>
                 )}
               </div>
             )}

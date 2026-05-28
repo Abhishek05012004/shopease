@@ -16,6 +16,7 @@ const wishlistRoutes = require("./routes/wishlist");
 const paymentsRoutes = require("./routes/payments");
 const recommendationsRoutes = require("./routes/recommendations");
 const analyticsRoutes = require("./routes/analytics");
+const contactRoutes = require("./routes/contact");
 
 const app = express();
 
@@ -109,6 +110,7 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/payments", paymentsRoutes);
 app.use("/api/recommendations", recommendationsRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Health check route
 app.get("/api/health", (req, res) => {

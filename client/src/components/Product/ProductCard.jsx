@@ -135,7 +135,7 @@ const ProductCard = ({ product, viewMode = "grid" }) => {
             <div className="flex items-center space-x-4 mb-4 text-xs text-slate-400">
               <div className="flex items-center space-x-1">
                 <Truck className="h-3 w-3" />
-                <span>Free Shipping</span>
+                <span>{product.price >= 500 ? "Free Shipping" : "+₹50 Shipping Fee"}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Shield className="h-3 w-3" />
@@ -295,8 +295,8 @@ const ProductCard = ({ product, viewMode = "grid" }) => {
         {/* Features */}
         <div className="flex items-center justify-center space-x-6 mb-4 py-3 bg-gradient-to-r from-slate-600 to-slate-600 rounded-lg border border-slate-500">
           <div className="flex items-center space-x-1 text-xs text-slate-200">
-            <Truck className="h-4 w-4 text-emerald-400" />
-            <span className="font-medium">Free Ship</span>
+            <Truck className={`h-4 w-4 ${product.price >= 500 ? 'text-emerald-400' : 'text-slate-400'}`} />
+            <span className="font-medium">{product.price >= 500 ? "Free Ship" : "+₹50 Ship"}</span>
           </div>
           <div className="flex items-center space-x-1 text-xs text-slate-200">
             <Shield className="h-4 w-4 text-yellow-400" />
@@ -322,7 +322,7 @@ const ProductCard = ({ product, viewMode = "grid" }) => {
               )}
             </div>
 
-            {product.stock > 0 && product.stock <= 10 && (
+            {product.stock > 0 && product.stock < 10 && (
               <span className="text-xs text-orange-400 font-semibold bg-orange-900 bg-opacity-30 px-2 py-1 rounded-full border border-orange-500">
                 Only {product.stock} left
               </span>

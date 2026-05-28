@@ -64,6 +64,8 @@
   box-sizing: border-box;
 }
 
+
+
 /* Updated body background to dark slate gray */
 body {
   font-family: var(--font-body);
@@ -116,9 +118,10 @@ h6 {
   font-weight: 600;
 }
 
-/* Updated scrollbar with new color scheme */
+/* Updated scrollbar with new color scheme - made thin globally */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -132,6 +135,12 @@ h6 {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent-dark);
+}
+
+/* Global thin scrollbars support for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) var(--color-primary-light);
 }
 
 /* Updated loading spinner with gold accent */
