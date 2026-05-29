@@ -64,18 +64,18 @@ const Home = () => {
   const getDisplayProducts = () => {
     const featured = featuredProducts?.data || [];
     if (featured.length === 0) return [];
-    
+
     const displayList = [...featured];
     if (displayList.length >= visibleCount) {
       return displayList.slice(0, visibleCount);
     }
-    
+
     const extraNeeded = visibleCount - displayList.length;
     const allProdList = allProductsRes?.data?.products || [];
     const nonFeatured = allProdList.filter(
       (p) => !featured.some((fp) => fp._id === p._id)
     );
-    
+
     for (let i = 0; i < extraNeeded; i++) {
       if (nonFeatured.length > 0) {
         displayList.push(nonFeatured[i % nonFeatured.length]);
@@ -91,7 +91,7 @@ const Home = () => {
   const heroImages = [
     "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=1080&fit=crop&q=80",
     "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=1920&h=1080&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1920&h=1080&fit=crop&q=80",
+    "https://plus.unsplash.com/premium_photo-1664202525979-80d1da46b34b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHN0b3JlfGVufDB8fDB8fHww",
   ];
 
   useEffect(() => {
@@ -185,9 +185,8 @@ const Home = () => {
           {heroImages.map((image, index) => (
             <div
               key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === currentImageIndex ? "opacity-100" : "opacity-0"
-              }`}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentImageIndex ? "opacity-100" : "opacity-0"
+                }`}
             >
               <img
                 src={image || "/placeholder.svg"}
@@ -240,11 +239,10 @@ const Home = () => {
             <button
               key={index}
               onClick={() => setCurrentImageIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentImageIndex
-                  ? "bg-yellow-400 scale-125"
-                  : "bg-white bg-opacity-50 hover:bg-opacity-75"
-              }`}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentImageIndex
+                ? "bg-yellow-400 scale-125"
+                : "bg-white bg-opacity-50 hover:bg-opacity-75"
+                }`}
             />
           ))}
         </div>
