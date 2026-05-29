@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { User, Menu, X, Bell, Store, Settings, LogOut, Package, ShoppingCart, Users, BarChart3 } from "lucide-react"

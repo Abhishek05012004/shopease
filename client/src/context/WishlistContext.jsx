@@ -1,5 +1,3 @@
-"use client";
-
 import { createContext, useContext, useReducer, useEffect, useRef } from "react";
 import { useAuth } from "./AuthContext";
 import { wishlistAPI } from "../services/api";

@@ -1,5 +1,3 @@
-"use client";
-
 import { Link, useNavigate } from "react-router-dom";
 import { Heart, ShoppingCart, Trash2 } from "lucide-react";
 import { useWishlist } from "../context/WishlistContext";

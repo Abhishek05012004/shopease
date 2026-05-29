@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Trash2, Search, Shield, User } from "lucide-react";

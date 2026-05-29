@@ -1,5 +1,3 @@
-"use client";
-
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import { cartAPI } from "../services/api";

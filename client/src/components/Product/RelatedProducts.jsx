@@ -1,5 +1,3 @@
-"use client"
-
 import { useQuery } from "react-query"
 import { productsAPI } from "../../services/api"
 import ProductCard from "./ProductCard"

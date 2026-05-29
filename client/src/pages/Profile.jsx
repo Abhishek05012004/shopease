@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { User, Mail, Phone, MapPin, Edit2, Save, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";

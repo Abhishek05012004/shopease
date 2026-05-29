@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
 import { useNavigate } from "react-router-dom"

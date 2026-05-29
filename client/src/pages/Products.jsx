@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
